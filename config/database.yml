@@ -70,11 +70,8 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    # Render provides DATABASE_URL automatically
-    # Rails will use it if present, otherwise falls back to these settings
-    database: boramarcar_production
-    username: boramarcar
-    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    # Explicitly use DATABASE_URL from Render
+    url: <%= ENV.fetch("DATABASE_URL", "") %>
   # Use the same database for cache, queue, and cable (Render free tier has only one DB)
   cache:
     <<: *primary_production
