@@ -39,6 +39,7 @@ en:
       owner_label: "Owner: %{owner}"
     show:
       results: "See Results"
+      share_invite: "Share Invite Link"
       add_availability: "Add Your Availability"
       select_dates: "Click and drag on calendar to select dates"
       select_whole_month: "Select Whole Month"
@@ -75,6 +76,23 @@ en:
       is_public: "Public Group"
       weekends_only: "Weekends and Holidays Only"
     delete_confirm: "Are you sure you want to delete this group? This will remove all availabilities and memberships."
+    share_modal:
+      title: "Invite Members to Group"
+      invitations_enabled: "Invitations Active"
+      invitations_enabled_description: "Anyone with the link can join this private group"
+      invitations_disabled: "Invitations Disabled"
+      invitations_disabled_description: "Enable invitations to share this private group"
+      enable_invitations: "Enable Invitations"
+      disable_invitations: "Disable Invitations"
+      disable_confirm: "This will prevent new members from joining via the link. Current members are unaffected. Continue?"
+      invitation_link: "Invitation Link"
+      copy: "Copy"
+      share_via: "Share Via"
+      whatsapp_message: "Join my group '%{group}' on Bora Marcar!"
+      regenerate_link_title: "Regenerate Invitation Link"
+      regenerate_link_description: "Create a new link and invalidate the old one"
+      regenerate: "Regenerate"
+      regenerate_confirm: "The current invitation link will stop working. Are you sure?"
 
   # Availabilities
   availabilities:
@@ -218,10 +236,17 @@ en:
     group_not_found: "Group not found."
     member_removed: "Member removed from the group."
     member_joined: "You joined the group."
+    member_joined_via_invite: "You joined the group via invitation link!"
     member_left: "You left the group."
     member_not_found: "Member not found in this group."
     cannot_remove_owner: "Cannot remove the group owner."
     not_authorized: "Not authorized."
+    not_a_member: "This is a private group. You need an invitation to view it."
+    already_member: "You're already a member of this group."
+    invalid_invitation: "Invalid or expired invitation link."
+    invitations_enabled: "Invitations enabled. Share the link to invite members."
+    invitations_disabled: "Invitations disabled."
+    invite_link_regenerated: "New invitation link generated. Old link no longer works."
 
   # Devise (Authentication)
   devise:

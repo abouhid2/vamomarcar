@@ -39,6 +39,7 @@ pt-BR:
       owner_label: "Proprietário: %{owner}"
     show:
       results: "Ver Resultados"
+      share_invite: "Compartilhar Link de Convite"
       add_availability: "Adicionar Sua Disponibilidade"
       select_dates: "Clique e arraste no calendário para selecionar datas"
       select_whole_month: "Selecionar Mês Inteiro"
@@ -80,6 +81,23 @@ pt-BR:
         one: "%{count} erro impediu que este grupo fosse salvo:"
         other: "%{count} erros impediram que este grupo fosse salvo:"
     delete_confirm: "Tem certeza que deseja excluir este grupo? Isso removerá todas as disponibilidades e membros."
+    share_modal:
+      title: "Convidar Membros para o Grupo"
+      invitations_enabled: "Convites Ativos"
+      invitations_enabled_description: "Qualquer pessoa com o link pode entrar neste grupo privado"
+      invitations_disabled: "Convites Desativados"
+      invitations_disabled_description: "Ative os convites para compartilhar este grupo privado"
+      enable_invitations: "Ativar Convites"
+      disable_invitations: "Desativar Convites"
+      disable_confirm: "Isso impedirá que novos membros entrem pelo link. Os membros atuais não serão afetados. Continuar?"
+      invitation_link: "Link de Convite"
+      copy: "Copiar"
+      share_via: "Compartilhar Via"
+      whatsapp_message: "Entre no meu grupo '%{group}' no Bora Marcar!"
+      regenerate_link_title: "Gerar Novo Link de Convite"
+      regenerate_link_description: "Criar um novo link e invalidar o antigo"
+      regenerate: "Gerar Novo"
+      regenerate_confirm: "O link de convite atual vai parar de funcionar. Tem certeza?"
 
   # Availabilities
   availabilities:
@@ -223,10 +241,17 @@ pt-BR:
     group_not_found: "Grupo não encontrado."
     member_removed: "Membro removido do grupo."
     member_joined: "Você entrou no grupo."
+    member_joined_via_invite: "Você entrou no grupo via link de convite!"
     member_left: "Você saiu do grupo."
     member_not_found: "Membro não encontrado neste grupo."
     cannot_remove_owner: "Não é possível remover o proprietário do grupo."
     not_authorized: "Não autorizado."
+    not_a_member: "Este é um grupo privado. Você precisa de um convite para visualizá-lo."
+    already_member: "Você já é membro deste grupo."
+    invalid_invitation: "Link de convite inválido ou expirado."
+    invitations_enabled: "Convites ativados. Compartilhe o link para convidar membros."
+    invitations_disabled: "Convites desativados."
+    invite_link_regenerated: "Novo link de convite gerado. O link antigo não funciona mais."
 
   # Devise (Authentication)
   devise:

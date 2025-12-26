@@ -6,9 +6,13 @@ Rails.application.routes.draw do
   resources :groups do
     member do
       get :results
+      get :share_invite
       post :join
       delete :leave
       delete :remove_member
+      post :enable_invitations
+      post :disable_invitations
+      post :regenerate_invite_token
     end
     resources :availabilities, only: [ :index, :create, :destroy ] do
       collection do

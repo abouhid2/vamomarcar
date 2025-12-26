@@ -1,7 +1,8 @@
 class GroupsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_group, only: [ :show, :edit, :update, :destroy, :results, :join, :leave, :remove_member ]
-  before_action :authorize_owner!, only: [ :edit, :update, :destroy, :remove_member ]
+  before_action :set_group, only: [ :show, :edit, :update, :destroy, :results, :join, :leave, :remove_member, :share_invite, :enable_invitations, :disable_invitations, :regenerate_invite_token ]
+  before_action :authorize_member!, only: [ :show, :results ]
+  before_action :authorize_owner!, only: [ :edit, :update, :destroy, :remove_member, :enable_invitations, :disable_invitations, :regenerate_invite_token ]
 
   def index
     @groups = current_user.groups.includes(:owner, :members).order(created_at: :desc)
@@ -50,11 +51,22 @@ class GroupsController < ApplicationController
   end
 
   def join
-    if @group.is_public && !@group.members.include?(current_user)
+    # Public group join
+    if @group.is_public && !@group.member?(current_user)
       @group.group_memberships.create(user: current_user)
       redirect_to @group, notice: t('notifications.member_joined')
+
+    # Private group with valid invitation token
+    elsif !@group.is_public && @group.invitation_enabled && params[:token] == @group.invitation_token
+      if @group.member?(current_user)
+        redirect_to @group, notice: t('notifications.already_member')
+      else
+        @group.group_memberships.create(user: current_user)
+        redirect_to @group, notice: t('notifications.member_joined_via_invite')
+      end
+
     else
-      redirect_to @group, alert: t('notifications.not_authorized')
+      redirect_to groups_path, alert: t('notifications.invalid_invitation')
     end
   end
 
@@ -85,12 +97,45 @@ class GroupsController < ApplicationController
     end
   end
 
+  def share_invite
+    # Get or generate invitation token
+    unless @group.invitation_token.present?
+      @group.generate_invitation_token
+      @group.save!
+    end
+
+    @invitation_url = @group.invitation_url(request.base_url)
+
+    render partial: 'groups/share_invite_modal'
+  end
+
+  def enable_invitations
+    @group.enable_invitations!
+    redirect_to @group, notice: t('notifications.invitations_enabled')
+  end
+
+  def disable_invitations
+    @group.disable_invitations!
+    redirect_to @group, notice: t('notifications.invitations_disabled')
+  end
+
+  def regenerate_invite_token
+    @group.regenerate_invitation_token!
+    redirect_to @group, notice: t('notifications.invite_link_regenerated')
+  end
+
   private
 
   def set_group
     @group = Group.find(params.expect(:id))
   rescue ActiveRecord::RecordNotFound
     redirect_to groups_path, alert: t('notifications.group_not_found')
+  end
+
+  def authorize_member!
+    unless @group.is_public || @group.member?(current_user)
+      redirect_to groups_path, alert: t('notifications.not_a_member')
+    end
   end
 
   def authorize_owner!
