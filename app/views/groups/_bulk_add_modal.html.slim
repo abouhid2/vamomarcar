@@ -1,0 +1,93 @@
+/ Bulk Add Availability Modal
+div id="bulkAddModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-50" data-calendar-target="bulkModal" data-action="click->calendar#closeBulkModalBackdrop"
+  .flex.items-center.justify-center.min-h-screen.px-4.py-8
+    div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col" data-action="click->calendar#stopPropagation"
+      / Modal Header
+      div class="flex justify-between items-center p-6 border-b flex-shrink-0"
+        h3.text-2xl.font-bold.text-gray-900 = t('availabilities.bulk_add_modal.title')
+        button type="button" class="text-gray-400 hover:text-gray-600" data-action="click->calendar#closeBulkModal"
+          svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+
+      / Tabs
+      div class="flex border-b bg-gray-50 flex-shrink-0"
+        button type="button" class="flex-1 px-6 py-4 font-semibold transition border-b-2 border-purple-600 text-purple-600" data-calendar-target="monthsTabButton" data-action="click->calendar#switchToMonthsTab"
+          = t('availabilities.bulk_add_modal.months_tab')
+        button type="button" class="flex-1 px-6 py-4 font-semibold transition border-b-2 border-transparent text-gray-600 hover:text-gray-900" data-calendar-target="holidaysTabButton" data-action="click->calendar#switchToHolidaysTab"
+          = t('availabilities.bulk_add_modal.holidays_tab')
+
+      / Modal Body
+      div class="p-6 overflow-y-auto flex-1"
+        / Months Tab Content
+        div data-calendar-target="monthsTabContent"
+          .mb-4
+            .flex.items-center.justify-between.mb-3
+              h4.text-lg.font-semibold.text-gray-900 = t('availabilities.bulk_add_modal.select_months')
+              .flex.gap-2.text-sm
+                span.text-gray-600 = t('availabilities.bulk_add_modal.quick_select')
+                button.text-purple-600.hover:text-purple-800.font-medium[type="button" data-action="click->calendar#quickSelectMonths" data-months="3"]
+                  = t('availabilities.bulk_add_modal.next_3_months')
+                span.text-gray-400 |
+                button.text-purple-600.hover:text-purple-800.font-medium[type="button" data-action="click->calendar#quickSelectMonths" data-months="6"]
+                  = t('availabilities.bulk_add_modal.next_6_months')
+                span.text-gray-400 |
+                button.text-purple-600.hover:text-purple-800.font-medium[type="button" data-action="click->calendar#quickSelectMonths" data-months="9"]
+                  = t('availabilities.bulk_add_modal.next_9_months')
+                span.text-gray-400 |
+                button.text-purple-600.hover:text-purple-800.font-medium[type="button" data-action="click->calendar#quickSelectMonths" data-months="12"]
+                  = t('availabilities.bulk_add_modal.next_12_months')
+
+          / Weekends only checkbox
+          .mb-4
+            label class="flex items-center gap-2 cursor-pointer"
+              input type="checkbox" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" data-calendar-target="weekendsOnlyCheckbox"
+              span.text-sm.font-medium.text-gray-700 = t('availabilities.bulk_add_modal.weekends_only')
+
+          / Scrollable months container
+          .overflow-x-auto.pb-4
+            .flex.gap-3[style="min-width: min-content"]
+              - current_date = Date.today.beginning_of_month
+              - 18.times do |i|
+                - month_date = current_date + i.months
+                - month_key = month_date.strftime("%Y-%m")
+                .flex-shrink-0.w-40
+                  label class="block cursor-pointer"
+                    input type="checkbox" class="peer sr-only" data-calendar-target="monthCheckbox" data-month=month_key
+                    div class="border-2 border-gray-300 rounded-lg p-4 text-center transition peer-checked:border-purple-600 peer-checked:bg-purple-50 hover:border-purple-400"
+                      .text-sm.font-semibold.text-gray-900 = I18n.l(month_date, format: "%B")
+                      .text-xs.text-gray-600 = month_date.year
+                      .mt-2.text-xs.text-gray-500 = "#{month_date.end_of_month.day} dias"
+
+        / Holidays Tab Content
+        div class="hidden" data-calendar-target="holidaysTabContent"
+          .mb-6
+            label.block.text-sm.font-semibold.text-gray-700.mb-2 = t('availabilities.holiday_modal.select_year')
+            select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" data-calendar-target="yearSelect" data-action="change->calendar#loadHolidays"
+              - current_year = Date.today.year
+              - (current_year..current_year + 2).each do |year|
+                option value=year = year
+
+          / Loading State
+          div class="hidden" data-calendar-target="loading"
+            .flex.items-center.justify-center.py-8
+              .animate-spin.rounded-full.h-12.w-12.border-b-2.border-purple-600
+
+          / Holidays List
+          div data-calendar-target="holidaysList"
+            .text-center.text-gray-500.py-8 = t('availabilities.holiday_modal.select_year_prompt')
+
+          / Holiday Item Template
+          template data-calendar-target="holidayItemTemplate"
+            .flex.items-center.justify-between.p-3.bg-white.border.border-gray-200.rounded-lg.hover:border-purple-300.transition[data-holiday-item]
+              div
+                p.font-medium.text-gray-900[data-holiday-name]
+                p.text-sm.text-gray-600[data-holiday-day]
+              .text-right
+                p.font-semibold.text-purple-600[data-holiday-date]
+
+      / Modal Footer
+      div class="flex justify-end gap-3 p-6 border-t bg-gray-50 flex-shrink-0"
+        button type="button" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition" data-action="click->calendar#closeBulkModal"
+          = t('availabilities.bulk_add_modal.cancel')
+        button type="button" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition" data-action="click->calendar#confirmBulkAdd" data-calendar-target="bulkConfirmButton"
+          = t('availabilities.bulk_add_modal.confirm')

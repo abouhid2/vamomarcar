@@ -130,9 +130,7 @@ class GroupsController < ApplicationController
   end
 
   def weekend_or_holiday?(date)
-    # Saturday (6) or Sunday (0)
-    is_weekend = date.wday == 0 || date.wday == 6
     is_holiday = Holidays.on(date, :br).any?
-    is_weekend || is_holiday
+    date.weekend? || is_holiday
   end
 end

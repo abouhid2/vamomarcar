@@ -14,8 +14,10 @@ Rails.application.routes.draw do
       collection do
         delete :remove_range
         delete :batch_destroy
+        delete :remove_all
         get :preview_holidays
         post :add_all_holidays
+        post :add_months
       end
     end
   end

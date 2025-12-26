@@ -1,12 +1,15 @@
 #availabilities data-controller="batch-select"
   .flex.justify-between.items-center.mb-3
     h3.text-lg.font-bold.text-gray-900 = t('groups.show.your_availability')
-    = form_with url: batch_destroy_group_availabilities_path(group), method: :delete, data: { batch_select_target: "form removeButton", turbo_frame: "_top" }, class: "hidden" do |f|
+    .flex.gap-2
+      = form_with url: batch_destroy_group_availabilities_path(group), method: :delete, data: { batch_select_target: "form removeButton", turbo_frame: "_top" }, class: "hidden" do |f|
       = hidden_field_tag :current_month, current_month.strftime("%Y-%m-%d")
       - user_availability.each do |availability|
         = hidden_field_tag "availability_ids[]", availability.id, id: "batch_#{availability.id}", disabled: true
       button type="button" class="btn-brasil-danger px-3 py-1.5 text-sm" data-action="click->batch-select#submitBatch"
         = t('groups.show.remove_selected')
+      - if user_availability.any?
+        = button_to t('groups.show.remove_all'), remove_all_group_availabilities_path(group, current_month: current_month.strftime("%Y-%m-%d")), method: :delete, data: { turbo_confirm: t('groups.show.remove_all_confirm') }, class: "bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1.5 text-sm rounded-lg font-medium transition"
 
   - if user_availability.any?
     .space-y-1.5

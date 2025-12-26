@@ -39,15 +39,16 @@ module CalendarHelper
 
         # Check if day is a Brazilian holiday
         is_holiday = Holidays.on(day, :br).any?
+        is_weekend = day.weekend?
         holiday_name = is_holiday ? Holidays.on(day, :br).first[:name] : nil
 
         # Check if day is disabled (weekends_only filter)
-        is_disabled = group.weekends_only && !(day.saturday? || day.sunday? || is_holiday)
+        is_disabled = group.weekends_only && !(is_weekend || is_holiday)
 
         {
           date: day,
           day_number: day.day,
-          is_weekend: day.saturday? || day.sunday?,
+          is_weekend: is_weekend,
           is_holiday: is_holiday,
           holiday_name: holiday_name,
           is_today: day == Date.today,

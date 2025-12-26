@@ -65,11 +65,8 @@
                   p.text-sm.text-teal-700[data-calendar-target="selectionText"] = t('groups.show.select_dates')
 
                 .space-y-2
-                  button.w-full.bg-blue-100.hover:bg-blue-200.text-blue-800.px-4.py-2.rounded-lg.font-medium.transition[type="button" data-action="click->calendar#selectWholeMonth"]
-                    = t('groups.show.select_whole_month')
-
-                  button.w-full.bg-purple-100.hover:bg-purple-200.text-purple-800.px-4.py-2.rounded-lg.font-medium.transition[type="button" data-action="click->calendar#selectAllHolidays"]
-                    = t('groups.show.add_holidays')
+                  button.w-full.bg-purple-100.hover:bg-purple-200.text-purple-800.px-4.py-2.rounded-lg.font-medium.transition[type="button" data-action="click->calendar#openBulkAddModal"]
+                    = t('groups.show.bulk_add')
 
                   .grid.grid-cols-2.gap-2
                     = form.submit t('common.add'), class: "bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-lg font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed", disabled: true, data: { calendar_target: "submitButton" }
@@ -109,48 +106,5 @@
             .mt-3.pt-3.border-t.border-gray-200
               = button_to t('groups.show.join'), join_group_path(@group), class: "w-full bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-semibold transition text-sm"
 
-    / Holiday Selection Modal
-    div id="holidayModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-50" data-calendar-target="modal" data-action="click->calendar#closeModalBackdrop"
-      .flex.items-center.justify-center.min-h-screen.px-4.py-8
-        div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[85vh] flex flex-col" data-action="click->calendar#stopPropagation"
-          / Modal Header
-          div class="flex justify-between items-center p-6 border-b flex-shrink-0"
-            h3.text-2xl.font-bold.text-gray-900 = t('availabilities.holiday_modal.title')
-            button type="button" class="text-gray-400 hover:text-gray-600" data-action="click->calendar#closeModal"
-              svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
-
-          / Modal Body
-          div class="p-6 overflow-y-auto flex-1"
-            / Year Selection
-            .mb-6
-              label.block.text-sm.font-semibold.text-gray-700.mb-2 = t('availabilities.holiday_modal.select_year')
-              select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" data-calendar-target="yearSelect" data-action="change->calendar#loadHolidays"
-                - current_year = Date.today.year
-                - (current_year..current_year + 2).each do |year|
-                  option value=year = year
-
-            / Loading State
-            div class="hidden" data-calendar-target="loading"
-              .flex.items-center.justify-center.py-8
-                .animate-spin.rounded-full.h-12.w-12.border-b-2.border-purple-600
-
-            / Holidays List
-            div data-calendar-target="holidaysList"
-              .text-center.text-gray-500.py-8 = t('availabilities.holiday_modal.select_year_prompt')
-
-            / Holiday Item Template
-            template data-calendar-target="holidayItemTemplate"
-              .flex.items-center.justify-between.p-3.bg-white.border.border-gray-200.rounded-lg.hover:border-purple-300.transition[data-holiday-item]
-                div
-                  p.font-medium.text-gray-900[data-holiday-name]
-                  p.text-sm.text-gray-600[data-holiday-day]
-                .text-right
-                  p.font-semibold.text-purple-600[data-holiday-date]
-
-          / Modal Footer
-          div class="flex justify-end gap-3 p-6 border-t bg-gray-50 flex-shrink-0"
-            button type="button" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition" data-action="click->calendar#closeModal"
-              = t('common.cancel')
-            button type="button" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" data-action="click->calendar#confirmAddHolidays" data-calendar-target="confirmButton" disabled=true
-              = t('availabilities.holiday_modal.confirm')
+    / Bulk Add Availability Modal
+    = render "groups/bulk_add_modal"

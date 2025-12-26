@@ -16,7 +16,15 @@ export default class extends Controller {
     "holidaysList",
     "loading",
     "confirmButton",
-    "holidayItemTemplate"
+    "holidayItemTemplate",
+    "bulkModal",
+    "monthsTabButton",
+    "holidaysTabButton",
+    "monthsTabContent",
+    "holidaysTabContent",
+    "monthCheckbox",
+    "weekendsOnlyCheckbox",
+    "bulkConfirmButton"
   ]
 
   static values = {
@@ -267,8 +275,13 @@ export default class extends Controller {
 
   loadHolidays() {
     const year = this.yearSelectTarget.value
-    const formAction = this.formTarget.action
-    const groupId = formAction.match(/groups\/(\d+)/)[1]
+    const groupId = this.getGroupId()
+
+    if (!groupId) {
+      console.error('Cannot load holidays: group ID not found')
+      this.holidaysListTarget.innerHTML = `<div class="text-center text-red-500 py-8">${this.holidayErrorValue}</div>`
+      return
+    }
 
     // Show loading state
     this.loadingTarget.classList.remove("hidden")
@@ -280,17 +293,27 @@ export default class extends Controller {
         'Accept': 'application/json'
       }
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+        return response.json()
+      })
       .then(data => {
         this.displayHolidays(data)
         this.loadingTarget.classList.add("hidden")
         this.holidaysListTarget.classList.remove("hidden")
-        this.confirmButtonTarget.disabled = false
+        // Enable the appropriate confirm button (bulk modal or standalone modal)
+        if (this.hasBulkConfirmButtonTarget) {
+          this.bulkConfirmButtonTarget.disabled = false
+        } else if (this.hasConfirmButtonTarget) {
+          this.confirmButtonTarget.disabled = false
+        }
       })
       .catch(error => {
         console.error('Error loading holidays:', error)
         this.loadingTarget.classList.add("hidden")
-        this.holidaysListTarget.innerHTML = `<div class="text-center text-red-500 py-8">${this.holidayErrorValue}</div>`
+        this.holidaysListTarget.innerHTML = `<div class="text-center text-red-500 py-8">${this.holidayErrorValue}<br><small class="text-xs">${error.message}</small></div>`
         this.holidaysListTarget.classList.remove("hidden")
       })
   }
@@ -298,7 +321,12 @@ export default class extends Controller {
   displayHolidays(data) {
     if (data.count === 0) {
       this.holidaysListTarget.innerHTML = `<div class="text-center text-gray-500 py-8">${this.holidayNoHolidaysValue}</div>`
-      this.confirmButtonTarget.disabled = true
+      // Disable the appropriate confirm button
+      if (this.hasBulkConfirmButtonTarget) {
+        this.bulkConfirmButtonTarget.disabled = true
+      } else if (this.hasConfirmButtonTarget) {
+        this.confirmButtonTarget.disabled = true
+      }
       return
     }
 
@@ -346,8 +374,12 @@ export default class extends Controller {
 
   confirmAddHolidays() {
     const year = this.yearSelectTarget.value
-    const formAction = this.formTarget.action
-    const groupId = formAction.match(/groups\/(\d+)/)[1]
+    const groupId = this.getGroupId()
+
+    if (!groupId) {
+      alert(this.holidayErrorAddingValue)
+      return
+    }
 
     // Get the current month for the return month
     const currentMonthInput = this.formTarget.querySelector('[name="current_month"]')
@@ -379,8 +411,12 @@ export default class extends Controller {
     }).then(html => {
       // Process the Turbo Stream response
       Turbo.renderStreamMessage(html)
-      // Close the modal
-      this.closeModal()
+      // Close the appropriate modal (bulk modal or standalone modal)
+      if (this.hasBulkModalTarget) {
+        this.closeBulkModal()
+      } else if (this.hasModalTarget) {
+        this.closeModal()
+      }
     }).catch(error => {
       console.error('Error adding holidays:', error)
       alert(this.holidayErrorAddingValue)
@@ -400,8 +436,12 @@ export default class extends Controller {
     }
 
     // Get the group ID from the form action URL
-    const formAction = this.formTarget.action
-    const groupId = formAction.match(/groups\/(\d+)/)[1]
+    const groupId = this.getGroupId()
+
+    if (!groupId) {
+      console.error('Cannot remove availability: group ID not found')
+      return
+    }
 
     // Build the URL for the remove endpoint
     const url = `/groups/${groupId}/availabilities/remove_range`
@@ -472,6 +512,154 @@ export default class extends Controller {
     return date.toLocaleDateString(locale, options)
   }
 
+  getGroupId() {
+    // Try to get group ID from multiple sources
+    if (this.hasFormTarget) {
+      const formAction = this.formTarget.action
+      const match = formAction.match(/groups\/(\d+)/)
+      if (match) {
+        return match[1]
+      }
+    }
+
+    // Fallback: try to get from URL
+    const urlMatch = window.location.pathname.match(/groups\/(\d+)/)
+    if (urlMatch) {
+      return urlMatch[1]
+    }
+
+    console.error('Could not find group ID')
+    return null
+  }
+
   // This will be called automatically when form is submitted via Turbo
   // The form submission will trigger the create action in AvailabilitiesController
+
+  // ===== Bulk Add Modal Methods =====
+
+  openBulkAddModal() {
+    this.bulkModalTarget.classList.remove("hidden")
+    this.currentTab = 'months'
+    this.switchToMonthsTab()
+  }
+
+  closeBulkModal() {
+    this.bulkModalTarget.classList.add("hidden")
+    this.clearBulkSelections()
+  }
+
+  closeBulkModalBackdrop(event) {
+    if (event.target === event.currentTarget) {
+      this.closeBulkModal()
+    }
+  }
+
+  switchToMonthsTab() {
+    this.currentTab = 'months'
+    this.updateTabStyles()
+    this.monthsTabContentTarget.classList.remove("hidden")
+    this.holidaysTabContentTarget.classList.add("hidden")
+  }
+
+  switchToHolidaysTab() {
+    this.currentTab = 'holidays'
+    this.updateTabStyles()
+    this.monthsTabContentTarget.classList.add("hidden")
+    this.holidaysTabContentTarget.classList.remove("hidden")
+  }
+
+  updateTabStyles() {
+    // Reset all tabs
+    [this.monthsTabButtonTarget, this.holidaysTabButtonTarget].forEach(tab => {
+      tab.classList.remove('border-purple-600', 'text-purple-600')
+      tab.classList.add('border-transparent', 'text-gray-600')
+    })
+
+    // Highlight active tab
+    const activeTab = this.currentTab === 'months' ? this.monthsTabButtonTarget : this.holidaysTabButtonTarget
+
+    activeTab.classList.remove('border-transparent', 'text-gray-600')
+    activeTab.classList.add('border-purple-600', 'text-purple-600')
+  }
+
+  quickSelectMonths(event) {
+    const monthsCount = parseInt(event.currentTarget.dataset.months)
+
+    // Clear all checkboxes first
+    this.monthCheckboxTargets.forEach(checkbox => {
+      checkbox.checked = false
+    })
+
+    // Select the specified number of months
+    this.monthCheckboxTargets.slice(0, monthsCount).forEach(checkbox => {
+      checkbox.checked = true
+    })
+  }
+
+  confirmBulkAdd() {
+    if (this.currentTab === 'months') {
+      this.addSelectedMonths()
+    } else if (this.currentTab === 'holidays') {
+      this.confirmAddHolidays()
+    }
+  }
+
+  addSelectedMonths() {
+    const selectedMonths = this.monthCheckboxTargets
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.dataset.month)
+
+    if (selectedMonths.length === 0) {
+      alert('Please select at least one month')
+      return
+    }
+
+    const groupId = this.getGroupId()
+
+    if (!groupId) {
+      alert('Error: Could not find group ID')
+      return
+    }
+
+    const currentMonthInput = this.formTarget.querySelector('[name="current_month"]')
+    const currentMonth = currentMonthInput ? currentMonthInput.value : ''
+    const weekendsOnly = this.weekendsOnlyCheckboxTarget.checked
+
+    const formData = new FormData()
+    selectedMonths.forEach(month => formData.append('months[]', month))
+    formData.append('current_month', currentMonth)
+    formData.append('weekends_only', weekendsOnly)
+
+    fetch(`/groups/${groupId}/availabilities/add_months`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+        'Accept': 'text/vnd.turbo-stream.html'
+      },
+      body: formData
+    }).then(response => {
+      if (response.ok) {
+        return response.text()
+      } else {
+        throw new Error('Failed to add months')
+      }
+    }).then(html => {
+      Turbo.renderStreamMessage(html)
+      this.closeBulkModal()
+    }).catch(error => {
+      console.error('Error adding months:', error)
+      alert('Error adding months')
+    })
+  }
+
+  clearBulkSelections() {
+    // Clear month checkboxes
+    this.monthCheckboxTargets.forEach(checkbox => {
+      checkbox.checked = false
+    })
+    // Clear weekends only checkbox
+    if (this.hasWeekendsOnlyCheckboxTarget) {
+      this.weekendsOnlyCheckboxTarget.checked = false
+    }
+  }
 }

@@ -89,6 +89,45 @@ class AvailabilitiesController < ApplicationController
     respond_with_turbo(success: t('availabilities.batch_destroy.success', count: deleted_count))
   end
 
+  def add_months
+    months = params[:months] || []
+    weekends_only = params[:weekends_only] == "true"
+    service = AvailabilityService.new(user: current_user, group: @group)
+    added_count = 0
+
+    months.each do |month_str|
+      month_date = Date.parse("#{month_str}-01")
+      start_date = month_date.beginning_of_month
+      end_date = month_date.end_of_month
+
+      if weekends_only
+        # Add only weekends (Friday, Saturday, Sunday) from this month
+        (start_date..end_date).each do |date|
+          if date.weekend?
+            if service.add(start_date: date, end_date: date)
+              added_count += 1
+            end
+          end
+        end
+      else
+        # Add all days in the month
+        if service.add(start_date: start_date, end_date: end_date)
+          added_count += 1
+        end
+      end
+    end
+
+    prepare_turbo_response
+    success_key = weekends_only ? 'availabilities.add_weekends.success' : 'availabilities.add_months.success'
+    respond_with_turbo(success: t(success_key, count: added_count, year: months.first&.split('-')&.first))
+  end
+
+  def remove_all
+    deleted_count = @group.availabilities.where(user: current_user).destroy_all.count
+    prepare_turbo_response
+    respond_with_turbo(success: t('availabilities.remove_all.success'))
+  end
+
   private
 
   def set_group

@@ -43,10 +43,13 @@ en:
       select_dates: "Click and drag on calendar to select dates"
       select_whole_month: "Select Whole Month"
       add_holidays: "🎉 Add All Year Holidays"
+      bulk_add: "📅 Bulk Add"
       remove: "Remove"
       clear_selection: "Clear Selection"
       your_availability: "Your Availability"
       no_availability: "Select dates on the calendar"
+      remove_all: "Remove All"
+      remove_all_confirm: "Are you sure you want to remove ALL your availability?"
       members: "Members"
       members_count:
         one: "Members (%{count})"
@@ -85,6 +88,8 @@ en:
     batch_destroy:
       success: "Removed %{count} availability entries."
       no_selection: "No availabilities selected."
+    remove_all:
+      success: "All your availability has been removed."
     add_all_holidays:
       success: "Added %{count} holidays to your availability for %{year}."
       no_holidays: "No holidays found for %{year}."
@@ -98,6 +103,23 @@ en:
       error: "Error loading holidays"
       no_holidays: "No holidays found for this year"
       confirm: "Add Holidays"
+    bulk_add_modal:
+      title: "📅 Bulk Add Availability"
+      months_tab: "Months"
+      holidays_tab: "Holidays"
+      select_months: "Select Months"
+      quick_select: "Quick Select:"
+      next_3_months: "Next 3 months"
+      next_6_months: "Next 6 months"
+      next_9_months: "Next 9 months"
+      next_12_months: "Next 12 months"
+      weekends_only: "Weekends only (Fri, Sat, Sun)"
+      confirm: "Add Selected"
+      cancel: "Cancel"
+    add_months:
+      success: "Added %{count} months to your availability."
+    add_weekends:
+      success: "Added %{count} weekends for %{year}."
 
   # Results
   results:
@@ -108,7 +130,6 @@ en:
     date_count:
       one: "(%{count} date)"
       other: "(%{count} dates)"
-    sorted_by: "Sorted by availability - showing dates with the most people free first"
     perfect_match: "PERFECT MATCH!"
     people_count:
       one: "%{count} of %{total} person"

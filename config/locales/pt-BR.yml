@@ -43,10 +43,13 @@ pt-BR:
       select_dates: "Clique e arraste no calendário para selecionar datas"
       select_whole_month: "Selecionar Mês Inteiro"
       add_holidays: "🎉 Adicionar Todos os Feriados do Ano"
+      bulk_add: "📅 Adicionar em Massa"
       remove: "Remover"
       clear_selection: "Limpar Seleção"
       your_availability: "Sua Disponibilidade"
       no_availability: "Selecione datas no calendário"
+      remove_all: "Remover Tudo"
+      remove_all_confirm: "Tem certeza que deseja remover TODA a sua disponibilidade?"
       members: "Membros"
       members_count:
         one: "Membros (%{count})"
@@ -54,7 +57,7 @@ pt-BR:
       join: "Entrar"
       public: "Público"
       private: "Privado"
-      weekends_only: "Apenas Finais de Semana"
+      weekends_only: "Finais de Semana"
       you_are_owner: "Você é o proprietário"
       remove_member_confirm: "Remover %{name} do grupo?"
       remove_selected: "Remover"
@@ -90,6 +93,8 @@ pt-BR:
     batch_destroy:
       success: "Removidas %{count} entradas de disponibilidade."
       no_selection: "Nenhuma disponibilidade selecionada."
+    remove_all:
+      success: "Toda a sua disponibilidade foi removida."
     add_all_holidays:
       success: "Adicionados %{count} feriados à sua disponibilidade para %{year}."
       no_holidays: "Nenhum feriado encontrado para %{year}."
@@ -103,6 +108,23 @@ pt-BR:
       error: "Erro ao carregar feriados"
       no_holidays: "Nenhum feriado encontrado para este ano"
       confirm: "Adicionar Feriados"
+    bulk_add_modal:
+      title: "📅 Adicionar Disponibilidade em Massa"
+      months_tab: "Meses"
+      holidays_tab: "Feriados"
+      select_months: "Selecionar Meses"
+      quick_select: "Seleção Rápida:"
+      next_3_months: "Próximos 3 meses"
+      next_6_months: "Próximos 6 meses"
+      next_9_months: "Próximos 9 meses"
+      next_12_months: "Próximos 12 meses"
+      weekends_only: "Finais de semana (Sex, Sáb, Dom)"
+      confirm: "Adicionar Selecionados"
+      cancel: "Cancelar"
+    add_months:
+      success: "Adicionados %{count} meses à sua disponibilidade."
+    add_weekends:
+      success: "Adicionados %{count} finais de semana para %{year}."
 
   # Results
   results:
@@ -113,7 +135,6 @@ pt-BR:
     date_count:
       one: "(%{count} data)"
       other: "(%{count} datas)"
-    sorted_by: "Ordenado por disponibilidade - mostrando datas com mais pessoas livres primeiro"
     perfect_match: "COMBINAÇÃO PERFEITA!"
     people_count:
       one: "%{count} de %{total} pessoa"
@@ -125,9 +146,9 @@ pt-BR:
     filters:
       filter_by: "Filtrar por:"
       all_days: "Todos os Dias"
-      weekends_only: "Apenas Finais de Semana"
-      weekdays_only: "Apenas Dias Úteis"
-      holidays_only: "🎉 Apenas Feriados"
+      weekends_only: "Finais de Semana"
+      weekdays_only: "Dias Úteis"
+      holidays_only: "🎉 Feriados"
       specific_day: "Dia Específico:"
       monday: "Seg"
       tuesday: "Ter"
