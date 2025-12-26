@@ -1,4 +1,4 @@
-# VamoMarcar - Family Meetup Coordinator
+# Bora Marcar - Family Meetup Coordinator
 
 A Ruby on Rails application that helps families and groups coordinate meetups by finding optimal dates when everyone is available.
 
@@ -32,23 +32,27 @@ A Ruby on Rails application that helps families and groups coordinate meetups by
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
-cd vamomarcar
+cd boramarcar
 ```
 
 2. Install dependencies:
+
 ```bash
 bundle install
 ```
 
 3. Configure environment variables:
+
 ```bash
 cp .env.example .env
 # Edit .env with your database credentials if needed
 ```
 
 4. Setup the database:
+
 ```bash
 # Make sure PostgreSQL is running
 sudo service postgresql start
@@ -60,6 +64,7 @@ rails db:seed
 ```
 
 5. Start the development server:
+
 ```bash
 bin/dev
 ```
@@ -107,32 +112,38 @@ The seed data creates the following test accounts:
 ### Group Types
 
 **Private Groups:**
+
 - Only members can see and join
 - Perfect for family gatherings or close friend groups
 
 **Public Groups:**
+
 - Anyone can see and join
 - Great for community events or open meetups
 
 ## Database Schema
 
 ### Users
+
 - Email, encrypted password (via Devise)
 - Has many groups (through memberships)
 - Has many owned groups
 - Has many availabilities
 
 ### Groups
+
 - Name, description, is_public flag
 - Belongs to owner (User)
 - Has many members through group_memberships
 - Has many availabilities
 
 ### GroupMemberships
+
 - Join table between Users and Groups
 - Ensures one membership per user per group
 
 ### Availabilities
+
 - Start date and end date
 - Belongs to User and Group
 - Supports both single days and date ranges
@@ -144,6 +155,7 @@ The seed data creates the following test accounts:
 Located in `app/controllers/groups_controller.rb:87-108`
 
 The algorithm:
+
 1. Collects all availability records for the group
 2. Expands each availability into individual dates
 3. Groups dates by user count
@@ -184,6 +196,7 @@ app/
 ## Future Enhancements
 
 Potential features for scaling:
+
 - Email notifications for new group invitations
 - Calendar integration (Google Calendar, iCal)
 - Mobile app (React Native or Flutter)
@@ -196,6 +209,7 @@ Potential features for scaling:
 ## Testing
 
 To run tests:
+
 ```bash
 rails test
 ```
@@ -205,6 +219,7 @@ rails test
 The application is containerized with Docker and configured for deployment with Kamal.
 
 For Heroku deployment:
+
 ```bash
 heroku create
 heroku addons:create heroku-postgresql
