@@ -1,5 +1,5 @@
 en:
-  app_name: "VamoMarcar"
+  app_name: "Bora Marcar"
 
   # Navigation
   nav:
@@ -203,7 +203,7 @@ en:
   devise:
     sessions:
       new:
-        title: "Welcome Back"
+        title: "Bora Marcar"
         subtitle: "Sign in to coordinate your meetups"
         email_label: "Email"
         email_placeholder: "your@email.com"
@@ -214,7 +214,7 @@ en:
     registrations:
       new:
         title: "Create Account"
-        subtitle: "Join VamoMarcar to coordinate meetups"
+        subtitle: "Join Bora Marcar to coordinate meetups"
         email_label: "Email"
         email_placeholder: "your@email.com"
         password_label: "Password"
@@ -237,7 +237,7 @@ en:
         no_account: "Don't have an account?"
         sign_up: "Sign Up"
         forgot_password: "Forgot your password?"
-      tagline: "VamoMarcar - Coordinate family meetups with ease"
+      tagline: "Bora Marcar - Coordinate family meetups with ease"
 
   # Calendar JavaScript
   calendar:

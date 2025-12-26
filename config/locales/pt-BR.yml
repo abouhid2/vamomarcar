@@ -1,5 +1,5 @@
 pt-BR:
-  app_name: "VamoMarcar"
+  app_name: "Bora Marcar"
 
   # Navigation
   nav:
@@ -208,7 +208,7 @@ pt-BR:
   devise:
     sessions:
       new:
-        title: "Bem-vindo de Volta"
+        title: "Bora Marcar"
         subtitle: "Faça login para coordenar seus encontros"
         email_label: "Email"
         email_placeholder: "seu@email.com"
@@ -219,7 +219,7 @@ pt-BR:
     registrations:
       new:
         title: "Criar Conta"
-        subtitle: "Junte-se ao VamoMarcar para coordenar encontros"
+        subtitle: "Junte-se ao Bora Marcar para coordenar encontros"
         email_label: "Email"
         email_placeholder: "seu@email.com"
         password_label: "Senha"
@@ -242,7 +242,7 @@ pt-BR:
         no_account: "Não tem uma conta?"
         sign_up: "Cadastrar"
         forgot_password: "Esqueceu sua senha?"
-      tagline: "VamoMarcar - Coordene encontros familiares com facilidade"
+      tagline: "Bora Marcar - Coordene encontros familiares com facilidade"
 
   # Calendar JavaScript
   calendar:

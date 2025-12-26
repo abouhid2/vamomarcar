@@ -44,7 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_25_112232) do
     t.bigint "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "weekends_only"
+    t.boolean "weekends_only", default: false, null: false
     t.index ["name"], name: "index_groups_on_name"
     t.index ["owner_id"], name: "index_groups_on_owner_id"
   end
