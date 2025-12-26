@@ -1,0 +1,259 @@
+pt-BR:
+  app_name: "VamoMarcar"
+
+  # Navigation
+  nav:
+    sign_in: "Entrar"
+    sign_out: "Sair"
+    sign_up: "Cadastrar"
+
+  # Common
+  common:
+    back: "Voltar"
+    edit: "Editar"
+    delete: "Excluir"
+    save: "Salvar"
+    cancel: "Cancelar"
+    confirm: "Confirmar"
+    remove: "Remover"
+    add: "Adicionar"
+    settings: "Configurações"
+    close: "Fechar"
+
+  # Groups
+  groups:
+    index:
+      title: "Meus Grupos"
+      new_group: "Novo Grupo"
+      no_groups: "Você ainda não entrou em nenhum grupo."
+      create_first: "Crie seu primeiro grupo para começar a coordenar encontros!"
+      member_count:
+        one: "%{count} membro"
+        other: "%{count} membros"
+      owner: "Proprietário"
+      view_details: "Ver Detalhes"
+      delete_confirm: "Tem certeza?"
+      leave: "Sair do Grupo"
+      leave_confirm: "Tem certeza que deseja sair?"
+      public_groups: "Grupos Públicos Disponíveis"
+      owner_label: "Proprietário: %{owner}"
+    show:
+      results: "Ver Resultados"
+      add_availability: "Adicionar Sua Disponibilidade"
+      select_dates: "Clique e arraste no calendário para selecionar datas"
+      select_whole_month: "Selecionar Mês Inteiro"
+      add_holidays: "🎉 Adicionar Todos os Feriados do Ano"
+      remove: "Remover"
+      clear_selection: "Limpar Seleção"
+      your_availability: "Sua Disponibilidade"
+      no_availability: "Selecione datas no calendário"
+      members: "Membros"
+      members_count:
+        one: "Membros (%{count})"
+        other: "Membros (%{count})"
+      join: "Entrar"
+      public: "Público"
+      private: "Privado"
+      weekends_only: "Apenas Finais de Semana"
+      you_are_owner: "Você é o proprietário"
+      remove_member_confirm: "Remover %{name} do grupo?"
+      remove_selected: "Remover Selecionados"
+      remove_count: "Remover %{count} %{entries}?"
+      entries:
+        one: "entrada"
+        other: "entradas"
+    new:
+      title: "Criar Novo Grupo"
+    edit:
+      title: "Editar Grupo"
+    form:
+      name: "Nome"
+      name_placeholder: "Reunião Familiar, Churrasco de Verão, etc."
+      description: "Descrição"
+      description_placeholder: "Descreva para que serve este grupo..."
+      is_public: "Tornar este grupo público (qualquer pessoa pode entrar)"
+      weekends_only: "Mostrar apenas finais de semana e feriados (para planejamento de viagens)"
+      errors:
+        one: "%{count} erro impediu que este grupo fosse salvo:"
+        other: "%{count} erros impediram que este grupo fosse salvo:"
+    delete_confirm: "Tem certeza que deseja excluir este grupo? Isso removerá todas as disponibilidades e membros."
+
+  # Availabilities
+  availabilities:
+    create:
+      success: "Disponibilidade adicionada com sucesso."
+      error: "Erro ao adicionar disponibilidade."
+    destroy:
+      success: "Disponibilidade removida."
+    remove_range:
+      success: "Disponibilidade removida com sucesso."
+    batch_destroy:
+      success: "Removidas %{count} entradas de disponibilidade."
+      no_selection: "Nenhuma disponibilidade selecionada."
+    add_all_holidays:
+      success: "Adicionados %{count} feriados à sua disponibilidade para %{year}."
+      no_holidays: "Nenhum feriado encontrado para %{year}."
+    holiday_modal:
+      title: "🎉 Adicionar Disponibilidade de Feriados"
+      select_year: "Selecionar Ano"
+      select_year_prompt: "Selecione um ano para ver os feriados"
+      count: "%{count} Feriados Federais Brasileiros em %{year}"
+      description: "Estas datas serão adicionadas à sua disponibilidade"
+      loading: "Carregando..."
+      error: "Erro ao carregar feriados"
+      no_holidays: "Nenhum feriado encontrado para este ano"
+      confirm: "Adicionar Feriados"
+
+  # Results
+  results:
+    title: "Datas de Encontro para %{group}"
+    subtitle: "Encontre as melhores datas quando a maioria das pessoas está disponível"
+    weekends_only_notice: "📅 Mostrando apenas finais de semana e feriados"
+    best_dates: "Melhores Datas de Encontro"
+    date_count:
+      one: "(%{count} data)"
+      other: "(%{count} datas)"
+    sorted_by: "Ordenado por disponibilidade - mostrando datas com mais pessoas livres primeiro"
+    perfect_match: "COMBINAÇÃO PERFEITA!"
+    people_count:
+      one: "%{count} de %{total} pessoa"
+      other: "%{count} de %{total} pessoas"
+    see_who: "Ver quem está disponível"
+    no_data: "Ainda não há dados de disponibilidade"
+    no_data_description: "Os membros do grupo ainda não adicionaram sua disponibilidade."
+    add_your_availability: "Adicionar Sua Disponibilidade"
+    filters:
+      filter_by: "Filtrar por:"
+      all_days: "Todos os Dias"
+      weekends_only: "Apenas Finais de Semana"
+      weekdays_only: "Apenas Dias Úteis"
+      holidays_only: "🎉 Apenas Feriados"
+      specific_day: "Dia Específico:"
+      monday: "Seg"
+      tuesday: "Ter"
+      wednesday: "Qua"
+      thursday: "Qui"
+      friday: "Sex"
+      saturday: "Sáb"
+      sunday: "Dom"
+
+  # Days of week (full names)
+  date:
+    day_names:
+      - Domingo
+      - Segunda-feira
+      - Terça-feira
+      - Quarta-feira
+      - Quinta-feira
+      - Sexta-feira
+      - Sábado
+    abbr_day_names:
+      - Dom
+      - Seg
+      - Ter
+      - Qua
+      - Qui
+      - Sex
+      - Sáb
+    month_names:
+      - ~
+      - Janeiro
+      - Fevereiro
+      - Março
+      - Abril
+      - Maio
+      - Junho
+      - Julho
+      - Agosto
+      - Setembro
+      - Outubro
+      - Novembro
+      - Dezembro
+    abbr_month_names:
+      - ~
+      - Jan
+      - Fev
+      - Mar
+      - Abr
+      - Mai
+      - Jun
+      - Jul
+      - Ago
+      - Set
+      - Out
+      - Nov
+      - Dez
+
+  # Time formats
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
+      long: "%A, %d de %B de %Y, %H:%M"
+
+  # Notifications
+  notifications:
+    group_created: "Grupo criado com sucesso."
+    group_updated: "Grupo atualizado com sucesso."
+    group_deleted: "Grupo excluído com sucesso."
+    group_not_found: "Grupo não encontrado."
+    member_removed: "Membro removido do grupo."
+    member_joined: "Você entrou no grupo."
+    member_left: "Você saiu do grupo."
+    member_not_found: "Membro não encontrado neste grupo."
+    cannot_remove_owner: "Não é possível remover o proprietário do grupo."
+    not_authorized: "Não autorizado."
+
+  # Devise (Authentication)
+  devise:
+    sessions:
+      new:
+        title: "Bem-vindo de Volta"
+        subtitle: "Faça login para coordenar seus encontros"
+        email_label: "Email"
+        email_placeholder: "seu@email.com"
+        password_label: "Senha"
+        password_placeholder: "Digite sua senha"
+        remember_me: "Lembrar de mim"
+        sign_in_button: "Entrar"
+    registrations:
+      new:
+        title: "Criar Conta"
+        subtitle: "Junte-se ao VamoMarcar para coordenar encontros"
+        email_label: "Email"
+        email_placeholder: "seu@email.com"
+        password_label: "Senha"
+        password_min_chars: "%{count} caracteres no mínimo"
+        password_placeholder: "Crie uma senha"
+        password_confirmation_label: "Confirmar Senha"
+        password_confirmation_placeholder: "Confirme sua senha"
+        sign_up_button: "Criar Conta"
+    passwords:
+      new:
+        title: "Redefinir Senha"
+        subtitle: "Enviaremos instruções de redefinição"
+        email_label: "Email"
+        email_placeholder: "seu@email.com"
+        send_reset_button: "Enviar Link de Redefinição"
+    shared:
+      links:
+        already_have_account: "Já tem uma conta?"
+        sign_in: "Entrar"
+        no_account: "Não tem uma conta?"
+        sign_up: "Cadastrar"
+        forgot_password: "Esqueceu sua senha?"
+      tagline: "VamoMarcar - Coordene encontros familiares com facilidade"
+
+  # Calendar JavaScript
+  calendar:
+    selection:
+      selected_single: "Selecionado: %{date}"
+      selected_range: "Selecionado: %{start} - %{end} (%{count} dias)"
+      select_prompt: "Clique e arraste no calendário para selecionar datas"
+    holidays:
+      select_year_prompt: "Selecione um ano para ver os feriados"
+      error_loading: "Erro ao carregar feriados"
+      no_holidays: "Nenhum feriado encontrado para este ano"
+      count_title: "%{count} Feriados Federais Brasileiros em %{year}"
+      count_subtitle: "Estas datas serão adicionadas à sua disponibilidade"
+      error_adding: "Erro ao adicionar feriados. Por favor, tente novamente."

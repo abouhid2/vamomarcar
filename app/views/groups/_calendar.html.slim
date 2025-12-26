@@ -1,0 +1,80 @@
+.bg-white.rounded-lg.shadow-md.p-6[data-current-month="#{calendar_data[:year]}-#{calendar_data[:month].to_s.rjust(2, '0')}-01" data-action="turbo:frame-load->calendar#updateCurrentMonth"]
+  / Month Navigation Header
+  .flex.justify-between.items-center.mb-6
+    = link_to group_path(group, month: calendar_data[:prev_month]), data: { turbo_frame: "calendar", turbo_action: "advance" }, class: "p-2 hover:bg-gray-100 rounded-lg transition" do
+      svg.w-6.h-6.text-gray-600[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+        path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"]
+
+    h2.text-2xl.font-bold.text-gray-900 = calendar_data[:month_name]
+
+    = link_to group_path(group, month: calendar_data[:next_month]), data: { turbo_frame: "calendar", turbo_action: "advance" }, class: "p-2 hover:bg-gray-100 rounded-lg transition" do
+      svg.w-6.h-6.text-gray-600[xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+        path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"]
+
+  / Legend
+  .mb-4.p-3.bg-gray-50.rounded-lg
+    .flex.flex-wrap.gap-4.text-sm
+      .flex.items-center.gap-2
+        .w-4.h-2.bg-teal-500.rounded
+        span.text-gray-700 You
+      .flex.items-center.gap-2
+        .w-4.h-2.bg-slate-400.rounded
+        span.text-gray-700 Others
+      .flex.items-center.gap-2
+        .w-4.h-2.border-2.border-teal-300.bg-teal-50.rounded
+        span.text-gray-700 Selecting
+      .flex.items-center.gap-2
+        span.text-xs 🎉
+        .w-4.h-4.bg-purple-50.rounded.border.border-purple-200
+        span.text-gray-700 Holiday
+
+  / Calendar Grid
+  .grid.grid-cols-7.gap-1
+    / Day Headers
+    - [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ].each do |day_name|
+      .text-center.font-semibold.text-gray-600.py-2.text-sm = day_name
+
+    / Day Cells
+    - calendar_data[:days].each do |day_data|
+      - cell_classes = [ "relative border rounded-lg p-2 h-28 cursor-pointer transition-all hover:border-teal-300" ]
+      - cell_classes << (day_data[:is_weekend] ? "bg-gray-50" : "bg-white")
+      - cell_classes << "bg-purple-100 border-purple-300" if day_data[:is_holiday]
+      - cell_classes << "opacity-40" unless day_data[:is_in_month]
+      - cell_classes << "ring-2 ring-blue-400" if day_data[:is_today]
+      - cell_classes << "opacity-50 cursor-not-allowed" if day_data[:disabled]
+      - cell_classes << "border-l-4 border-teal-500" if day_data[:current_user_available] && !day_data[:disabled]
+
+      div[class=cell_classes.join(" ") data-calendar-target="day" data-date=day_data[:date].to_s data-disabled=day_data[:disabled].to_s data-is-holiday=day_data[:is_holiday].to_s data-action="mousedown->calendar#startSelection mousemove->calendar#continueSelection"]
+        / Date Number (top-left)
+        .absolute.top-1.left-1.flex.items-center.gap-1
+          - if day_data[:is_holiday]
+            span.text-xs 🎉
+          span[class=(day_data[:is_in_month] ? "text-sm font-semibold text-gray-900" : "text-sm text-gray-400")] = day_data[:day_number]
+
+        / Holiday Name (below date number)
+        - if day_data[:is_holiday] && day_data[:is_in_month]
+          .absolute.top-6.left-1.right-1
+            p.text-xs.text-purple-800.font-medium.leading-tight.line-clamp-2 = day_data[:holiday_name]
+
+        / Count Badge (top-right) - only show if there are available users
+        - if day_data[:user_count] > 0
+          .absolute.top-1.right-1
+            - badge_class = availability_percentage_class(day_data[:percentage])
+            span.text-xs.px-1.5.py-0.5.rounded.font-semibold[class=badge_class]
+              = "#{day_data[:user_count]}/#{day_data[:total_members]}"
+
+        / Availability Bars (bottom) - show who's available
+        - if day_data[:user_count] > 0
+          .absolute.bottom-1.left-1.right-1.flex.gap-0.5
+            - max_bars = 5
+            - visible_users = day_data[:users].take(max_bars)
+            - remaining_count = day_data[:user_count] - max_bars
+
+            - visible_users.each do |user|
+              - if user.id == current_user.id
+                .h-2.flex-1.bg-teal-500.rounded[title="You" data-user-id=user.id]
+              - else
+                .h-2.flex-1.bg-slate-400.rounded[title=user.email data-user-id=user.id]
+
+            - if remaining_count > 0
+              .text-xs.text-gray-600 +#{remaining_count}

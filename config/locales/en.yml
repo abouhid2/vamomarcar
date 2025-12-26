@@ -1,0 +1,254 @@
+en:
+  app_name: "VamoMarcar"
+
+  # Navigation
+  nav:
+    sign_in: "Sign In"
+    sign_out: "Sign Out"
+    sign_up: "Sign Up"
+
+  # Common
+  common:
+    back: "Back"
+    edit: "Edit"
+    delete: "Delete"
+    save: "Save"
+    cancel: "Cancel"
+    confirm: "Confirm"
+    remove: "Remove"
+    add: "Add"
+    settings: "Settings"
+    close: "Close"
+
+  # Groups
+  groups:
+    index:
+      title: "My Groups"
+      new_group: "New Group"
+      no_groups: "You haven't joined any groups yet."
+      create_first: "Create your first group to start coordinating meetups!"
+      member_count:
+        one: "%{count} member"
+        other: "%{count} members"
+      owner: "Owner"
+      view_details: "View Details"
+      delete_confirm: "Are you sure?"
+      leave: "Leave Group"
+      leave_confirm: "Are you sure you want to leave?"
+      public_groups: "Public Groups You Can Join"
+      owner_label: "Owner: %{owner}"
+    show:
+      results: "See Results"
+      add_availability: "Add Your Availability"
+      select_dates: "Click and drag on calendar to select dates"
+      select_whole_month: "Select Whole Month"
+      add_holidays: "🎉 Add All Year Holidays"
+      remove: "Remove"
+      clear_selection: "Clear Selection"
+      your_availability: "Your Availability"
+      no_availability: "Select dates on the calendar"
+      members: "Members"
+      members_count:
+        one: "Members (%{count})"
+        other: "Members (%{count})"
+      join: "Join"
+      public: "Public"
+      private: "Private"
+      weekends_only: "Weekends Only"
+      you_are_owner: "You are the owner"
+      remove_member_confirm: "Remove %{name} from the group?"
+      remove_selected: "Remove Selected"
+      remove_count: "Remove %{count} %{entries}?"
+      entries:
+        one: "entry"
+        other: "entries"
+    new:
+      title: "Create New Group"
+    edit:
+      title: "Edit Group"
+    form:
+      name: "Name"
+      description: "Description"
+      is_public: "Public Group"
+      weekends_only: "Weekends and Holidays Only"
+    delete_confirm: "Are you sure you want to delete this group? This will remove all availabilities and memberships."
+
+  # Availabilities
+  availabilities:
+    create:
+      success: "Availability added successfully."
+      error: "Error adding availability."
+    destroy:
+      success: "Availability removed."
+    remove_range:
+      success: "Availability removed successfully."
+    batch_destroy:
+      success: "Removed %{count} availability entries."
+      no_selection: "No availabilities selected."
+    add_all_holidays:
+      success: "Added %{count} holidays to your availability for %{year}."
+      no_holidays: "No holidays found for %{year}."
+    holiday_modal:
+      title: "🎉 Add Holiday Availability"
+      select_year: "Select Year"
+      select_year_prompt: "Select a year to see holidays"
+      count: "%{count} Brazilian Federal Holidays in %{year}"
+      description: "These dates will be added to your availability"
+      loading: "Loading..."
+      error: "Error loading holidays"
+      no_holidays: "No holidays found for this year"
+      confirm: "Add Holidays"
+
+  # Results
+  results:
+    title: "Meeting Dates for %{group}"
+    subtitle: "Find the best dates when most people are available"
+    weekends_only_notice: "📅 Showing weekends and holidays only"
+    best_dates: "Best Meeting Dates"
+    date_count:
+      one: "(%{count} date)"
+      other: "(%{count} dates)"
+    sorted_by: "Sorted by availability - showing dates with the most people free first"
+    perfect_match: "PERFECT MATCH!"
+    people_count:
+      one: "%{count} of %{total} person"
+      other: "%{count} of %{total} people"
+    see_who: "See who's available"
+    no_data: "No availability data yet"
+    no_data_description: "Group members haven't added their availability yet."
+    add_your_availability: "Add Your Availability"
+    filters:
+      filter_by: "Filter by:"
+      all_days: "All Days"
+      weekends_only: "Weekends Only"
+      weekdays_only: "Weekdays Only"
+      holidays_only: "🎉 Holidays Only"
+      specific_day: "Specific Day:"
+      monday: "Mon"
+      tuesday: "Tue"
+      wednesday: "Wed"
+      thursday: "Thu"
+      friday: "Fri"
+      saturday: "Sat"
+      sunday: "Sun"
+
+  # Days of week (full names)
+  date:
+    day_names:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+    abbr_day_names:
+      - Sun
+      - Mon
+      - Tue
+      - Wed
+      - Thu
+      - Fri
+      - Sat
+    month_names:
+      - ~
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
+    abbr_month_names:
+      - ~
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
+
+  # Time formats
+  time:
+    formats:
+      default: "%m/%d/%Y %I:%M %p"
+      short: "%m/%d %I:%M %p"
+      long: "%A, %B %d, %Y, %I:%M %p"
+
+  # Notifications
+  notifications:
+    group_created: "Group created successfully."
+    group_updated: "Group updated successfully."
+    group_deleted: "Group deleted successfully."
+    group_not_found: "Group not found."
+    member_removed: "Member removed from the group."
+    member_joined: "You joined the group."
+    member_left: "You left the group."
+    member_not_found: "Member not found in this group."
+    cannot_remove_owner: "Cannot remove the group owner."
+    not_authorized: "Not authorized."
+
+  # Devise (Authentication)
+  devise:
+    sessions:
+      new:
+        title: "Welcome Back"
+        subtitle: "Sign in to coordinate your meetups"
+        email_label: "Email"
+        email_placeholder: "your@email.com"
+        password_label: "Password"
+        password_placeholder: "Enter your password"
+        remember_me: "Remember me"
+        sign_in_button: "Sign In"
+    registrations:
+      new:
+        title: "Create Account"
+        subtitle: "Join VamoMarcar to coordinate meetups"
+        email_label: "Email"
+        email_placeholder: "your@email.com"
+        password_label: "Password"
+        password_min_chars: "%{count} chars min"
+        password_placeholder: "Create a password"
+        password_confirmation_label: "Confirm Password"
+        password_confirmation_placeholder: "Confirm your password"
+        sign_up_button: "Create Account"
+    passwords:
+      new:
+        title: "Reset Password"
+        subtitle: "We'll send you reset instructions"
+        email_label: "Email"
+        email_placeholder: "your@email.com"
+        send_reset_button: "Send Reset Link"
+    shared:
+      links:
+        already_have_account: "Already have an account?"
+        sign_in: "Sign In"
+        no_account: "Don't have an account?"
+        sign_up: "Sign Up"
+        forgot_password: "Forgot your password?"
+      tagline: "VamoMarcar - Coordinate family meetups with ease"
+
+  # Calendar JavaScript
+  calendar:
+    selection:
+      selected_single: "Selected: %{date}"
+      selected_range: "Selected: %{start} - %{end} (%{count} days)"
+      select_prompt: "Click and drag on calendar to select dates"
+    holidays:
+      select_year_prompt: "Select a year to see holidays"
+      error_loading: "Error loading holidays"
+      no_holidays: "No holidays found for this year"
+      count_title: "%{count} Brazilian Federal Holidays in %{year}"
+      count_subtitle: "These dates will be added to your availability"
+      error_adding: "Error adding holidays. Please try again."

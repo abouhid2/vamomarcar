@@ -1,0 +1,183 @@
+.max-w-6xl.mx-auto
+  .mb-8
+    .flex.justify-between.items-start
+      div
+        .flex.items-center.gap-3.mb-2
+          = link_to groups_path, class: "text-gray-600 hover:text-gray-900 transition" do
+            svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          h1.text-3xl.font-bold.text-gray-900 = @group.name
+        p.text-gray-600.text-lg = @group.description
+        .flex.gap-2.mt-3
+          - if @group.is_public
+            span.inline-block.bg-green-100.text-green-800.text-sm.px-3.py-1.rounded = t('groups.show.public')
+          - else
+            span.inline-block.bg-gray-100.text-gray-800.text-sm.px-3.py-1.rounded = t('groups.show.private')
+          - if @group.weekends_only
+            span.inline-block.bg-blue-100.text-blue-800.text-sm.px-3.py-1.rounded = t('groups.show.weekends_only')
+          - if @group.owner == current_user
+            span.inline-block.bg-purple-100.text-purple-800.text-sm.px-3.py-1.rounded = t('groups.show.you_are_owner')
+
+      .flex.gap-3
+        = link_to t('groups.show.results'), results_group_path(@group), class: "bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-semibold transition"
+        - if @group.owner == current_user
+          div data-controller="dropdown" class="relative"
+            button type="button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-3 rounded-lg font-semibold transition flex items-center gap-2" data-action="click->dropdown#toggle"
+              svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              span = t('common.settings')
+            div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-10"
+              .py-1
+                = link_to edit_group_path(@group), class: "block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition" do
+                  .flex.items-center.gap-2
+                    svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    span = t('common.edit')
+                = button_to group_path(@group), method: :delete, data: { turbo_confirm: t('groups.delete_confirm') }, class: "block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition" do
+                  .flex.items-center.gap-2
+                    svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    span = t('common.delete')
+
+  / Wrap with calendar controller
+  div[data-controller="calendar" data-calendar-selected-single-value=t('calendar.selection.selected_single', date: '%{date}') data-calendar-selected-range-value=t('calendar.selection.selected_range', start: '%{start}', end: '%{end}', count: '%{count}') data-calendar-select-prompt-value=t('calendar.selection.select_prompt') data-calendar-holiday-select-year-value=t('calendar.holidays.select_year_prompt') data-calendar-holiday-error-value=t('calendar.holidays.error_loading') data-calendar-holiday-no-holidays-value=t('calendar.holidays.no_holidays') data-calendar-holiday-count-title-value=t('calendar.holidays.count_title', count: '%{count}', year: '%{year}') data-calendar-holiday-count-subtitle-value=t('calendar.holidays.count_subtitle') data-calendar-holiday-error-adding-value=t('calendar.holidays.error_adding') data-calendar-locale-value=I18n.locale]
+    .grid.md:grid-cols-3.gap-6
+
+      / Calendar Section (takes 2 columns)
+      .md:col-span-2
+        = turbo_frame_tag "calendar" do
+          = render "groups/calendar", group: @group, calendar_data: @calendar_data, current_user: current_user
+
+      / Sidebar (takes 1 column)
+      .space-y-4
+        / Add Availability Form
+        .sticky.top-24
+          = form_with model: [ @group, Availability.new ], local: false, data: { turbo_frame: "_top", calendar_target: "form" } do |form|
+            = form.hidden_field :start_date, data: { calendar_target: "startDateInput" }
+            = form.hidden_field :end_date, data: { calendar_target: "endDateInput" }
+            = hidden_field_tag :current_month, @current_month.strftime("%Y-%m-%d")
+
+            div[data-calendar-target="addButton"]
+              .bg-white.rounded-lg.shadow-md.p-4.border-2.border-teal-200
+                .mb-3
+                  p.font-semibold.text-teal-900.mb-2 = t('groups.show.add_availability')
+                  p.text-sm.text-teal-700[data-calendar-target="selectionText"] = t('groups.show.select_dates')
+
+                .space-y-2
+                  button.w-full.bg-blue-100.hover:bg-blue-200.text-blue-800.px-4.py-2.rounded-lg.font-medium.transition[type="button" data-action="click->calendar#selectWholeMonth"]
+                    = t('groups.show.select_whole_month')
+
+                  button.w-full.bg-purple-100.hover:bg-purple-200.text-purple-800.px-4.py-2.rounded-lg.font-medium.transition[type="button" data-action="click->calendar#selectAllHolidays"]
+                    = t('groups.show.add_holidays')
+
+                  .grid.grid-cols-2.gap-2
+                    = form.submit t('common.add'), class: "bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-lg font-semibold transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed", disabled: true, data: { calendar_target: "submitButton" }
+                    button.bg-red-600.hover:bg-red-700.text-white.px-4.py-3.rounded-lg.font-semibold.transition.disabled:opacity-50.disabled:cursor-not-allowed[type="button" disabled=true data-action="click->calendar#removeAvailability" data-calendar-target="removeButton"]
+                      = t('groups.show.remove')
+
+                  button.w-full.text-teal-600.hover:text-teal-800.text-sm.hidden[type="button" data-action="click->calendar#clearSelection" data-calendar-target="clearButton"]
+                    = t('groups.show.clear_selection')
+
+        / Your Availability List
+        .bg-white.rounded-lg.shadow-md.p-4
+          = turbo_frame_tag "availabilities" do
+            div data-controller="batch-select"
+              .flex.justify-between.items-center.mb-3
+                h3.text-lg.font-bold.text-gray-900 = t('groups.show.your_availability')
+                = form_with url: batch_destroy_group_availabilities_path(@group), method: :delete, data: { batch_select_target: "form", turbo_frame: "_top" }, class: "hidden", html: { data: { batch_select_target: "removeButton" } } do |f|
+                  = hidden_field_tag :current_month, @current_month.strftime("%Y-%m-%d")
+                  - @user_availability.each do |availability|
+                    = hidden_field_tag "availability_ids[]", availability.id, id: "batch_#{availability.id}", disabled: true
+                  button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition" data-action="click->batch-select#submitBatch"
+                    = t('groups.show.remove_selected')
+
+              - if @user_availability.any?
+                .space-y-1.5
+                  - @user_availability.order(:start_date).each do |availability|
+                    .flex.items-center.gap-2.bg-gray-50.p-2.rounded.text-sm
+                      input type="checkbox" class="rounded border-gray-300 text-teal-600 focus:ring-teal-500" data-batch-select-target="checkbox" data-action="change->batch-select#toggleSelection" value=availability.id id="availability_#{availability.id}" data-batch-field="batch_#{availability.id}"
+                      label for="availability_#{availability.id}" class="flex-1 cursor-pointer flex justify-between items-center"
+                        div
+                          - if availability.single_day?
+                            span.font-medium = availability.start_date.strftime("%b %d")
+                          - else
+                            span.font-medium
+                              = availability.start_date.strftime("%b %d")
+                              |  -
+                              = availability.end_date.strftime("%b %d")
+                        = link_to "×", group_availability_path(@group, availability, current_month: @current_month.strftime("%Y-%m-%d")), data: { turbo_method: :delete, turbo_confirm: t('common.remove') + "?" }, class: "text-red-600 hover:text-red-800 font-bold text-lg", onclick: "event.stopPropagation()"
+              - else
+                p.text-gray-500.italic.text-sm = t('groups.show.no_availability')
+
+        / Group Members Section
+        .bg-white.rounded-lg.shadow-md.p-4
+          h3.text-lg.font-bold.text-gray-900.mb-3
+            = t('groups.show.members_count', count: @members.count)
+
+          .space-y-1.5
+            - @members.each do |member|
+              .bg-gray-50.p-2.rounded.text-sm
+                .flex.items-center.justify-between
+                  .flex.items-center.gap-2.min-w-0.flex-1
+                    span.font-medium.text-gray-900.truncate = member.email.split('@').first
+                    - if member == @group.owner
+                      span.inline-block.bg-purple-100.text-purple-800.text-xs.px-1.5.py-0.5.rounded = t('groups.index.owner')
+
+                  .flex.items-center.gap-2
+                    / Show member's availability count
+                    == member_availability_badge(@group, member)
+
+                    / Show remove button only to owner and not for the owner themselves
+                    - if @group.owner == current_user && member != @group.owner
+                      = button_to "×", remove_member_group_path(@group, user_id: member.id), method: :delete, data: { turbo_confirm: t('groups.show.remove_member_confirm', name: member.email.split('@').first) }, class: "text-red-600 hover:text-red-800 font-bold text-lg leading-none"
+
+          - if @group.is_public && !@members.include?(current_user)
+            .mt-3.pt-3.border-t.border-gray-200
+              = button_to t('groups.show.join'), join_group_path(@group), class: "w-full bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-semibold transition text-sm"
+
+    / Holiday Selection Modal
+    div id="holidayModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-50" data-calendar-target="modal" data-action="click->calendar#closeModalBackdrop"
+      .flex.items-center.justify-center.min-h-screen.px-4.py-8
+        div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[85vh] flex flex-col" data-action="click->calendar#stopPropagation"
+          / Modal Header
+          div class="flex justify-between items-center p-6 border-b flex-shrink-0"
+            h3.text-2xl.font-bold.text-gray-900 = t('availabilities.holiday_modal.title')
+            button type="button" class="text-gray-400 hover:text-gray-600" data-action="click->calendar#closeModal"
+              svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
+
+          / Modal Body
+          div class="p-6 overflow-y-auto flex-1"
+            / Year Selection
+            .mb-6
+              label.block.text-sm.font-semibold.text-gray-700.mb-2 = t('availabilities.holiday_modal.select_year')
+              select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" data-calendar-target="yearSelect" data-action="change->calendar#loadHolidays"
+                - current_year = Date.today.year
+                - (current_year..current_year + 2).each do |year|
+                  option value=year = year
+
+            / Loading State
+            div class="hidden" data-calendar-target="loading"
+              .flex.items-center.justify-center.py-8
+                .animate-spin.rounded-full.h-12.w-12.border-b-2.border-purple-600
+
+            / Holidays List
+            div data-calendar-target="holidaysList"
+              .text-center.text-gray-500.py-8 = t('availabilities.holiday_modal.select_year_prompt')
+
+            / Holiday Item Template
+            template data-calendar-target="holidayItemTemplate"
+              .flex.items-center.justify-between.p-3.bg-white.border.border-gray-200.rounded-lg.hover:border-purple-300.transition[data-holiday-item]
+                div
+                  p.font-medium.text-gray-900[data-holiday-name]
+                  p.text-sm.text-gray-600[data-holiday-day]
+                .text-right
+                  p.font-semibold.text-purple-600[data-holiday-date]
+
+          / Modal Footer
+          div class="flex justify-end gap-3 p-6 border-t bg-gray-50 flex-shrink-0"
+            button type="button" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition" data-action="click->calendar#closeModal"
+              = t('common.cancel')
+            button type="button" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" data-action="click->calendar#confirmAddHolidays" data-calendar-target="confirmButton" disabled=true
+              = t('availabilities.holiday_modal.confirm')

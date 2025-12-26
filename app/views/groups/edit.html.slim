@@ -1,0 +1,7 @@
+.max-w-2xl.mx-auto
+  .mb-8
+    h1.text-3xl.font-bold.text-gray-900
+      | Edit Group: #{@group.name}
+
+  .bg-white.rounded-lg.shadow-md.p-8
+    = render "form", group: @group

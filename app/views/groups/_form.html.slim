@@ -1,0 +1,32 @@
+= form_with(model: group, class: "space-y-6") do |form|
+  - if group.errors.any?
+    .bg-red-100.border.border-red-400.text-red-700.px-4.py-3.rounded.mb-4
+      h3.font-bold.mb-2
+        = t('groups.form.errors', count: group.errors.count)
+      ul.list-disc.list-inside
+        - group.errors.full_messages.each do |message|
+          li = message
+
+  .space-y-4
+    div
+      = form.label :name, t('groups.form.name'), class: "block text-sm font-semibold text-gray-700 mb-2"
+      = form.text_field :name, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500", placeholder: t('groups.form.name_placeholder')
+
+    div
+      = form.label :description, t('groups.form.description'), class: "block text-sm font-semibold text-gray-700 mb-2"
+      = form.text_area :description, rows: 4, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500", placeholder: t('groups.form.description_placeholder')
+
+    div
+      .flex.items-center
+        = form.check_box :is_public, class: "w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+        = form.label :is_public, t('groups.form.is_public'), class: "ml-2 text-sm text-gray-700"
+
+    div
+      .flex.items-center
+        = form.check_box :weekends_only, class: "w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+        = form.label :weekends_only, t('groups.form.weekends_only'), class: "ml-2 text-sm text-gray-700"
+
+  .flex.gap-3.mt-6
+    = form.submit t('common.save'), class: "bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold transition cursor-pointer"
+    - cancel_path = group.persisted? ? group_path(group) : groups_path
+    = link_to t('common.cancel'), cancel_path, class: "bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-semibold transition"

@@ -1,0 +1,53 @@
+.max-w-6xl.mx-auto
+  .flex.justify-between.items-center.mb-8
+    h1.text-3xl.font-bold.text-gray-900 = t('groups.index.title')
+    = link_to t('groups.index.new_group'), new_group_path, class: "bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-md"
+
+  - if @groups.any?
+    .grid.gap-6.mb-12
+      - @groups.each do |group|
+        .bg-white.rounded-lg.shadow-md.p-6.hover:shadow-lg.transition
+          .flex.justify-between.items-start.mb-4
+            div
+              = link_to group, class: "text-2xl font-bold text-teal-600 hover:text-teal-800"
+                = group.name
+              p.text-gray-600.mt-1 = group.description
+              .flex.gap-2.mt-2
+                - if group.is_public
+                  span.inline-block.bg-green-100.text-green-800.text-xs.px-2.py-1.rounded = t('groups.show.public')
+                - else
+                  span.inline-block.bg-gray-100.text-gray-800.text-xs.px-2.py-1.rounded = t('groups.show.private')
+                span.inline-block.bg-blue-100.text-blue-800.text-xs.px-2.py-1.rounded
+                  = t('groups.index.member_count', count: group.members.count)
+            div
+              - if group.owner == current_user
+                span.inline-block.bg-purple-100.text-purple-800.text-xs.px-3.py-1.rounded = t('groups.index.owner')
+
+          .flex.gap-3.mt-4
+            = link_to t('groups.index.view_details'), group, class: "bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition"
+            = link_to t('groups.show.results'), results_group_path(group), class: "bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg transition"
+            - if group.owner == current_user
+              = link_to t('common.edit'), edit_group_path(group), class: "bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition"
+              = button_to t('common.delete'), group, method: :delete, data: { turbo_confirm: t('groups.index.delete_confirm') }, class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+            - elsif group.members.include?(current_user) && group.owner != current_user
+              = button_to t('groups.index.leave'), leave_group_path(group), method: :delete, data: { turbo_confirm: t('groups.index.leave_confirm') }, class: "bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition"
+  - else
+    .bg-gray-100.rounded-lg.p-8.text-center.mb-12
+      p.text-gray-600.text-lg = t('groups.index.no_groups')
+
+  - if @public_groups.any?
+    h2.text-2xl.font-bold.text-gray-900.mb-6 = t('groups.index.public_groups')
+    .grid.gap-6
+      - @public_groups.each do |group|
+        .bg-white.rounded-lg.shadow-md.p-6.hover:shadow-lg.transition
+          .mb-4
+            h3.text-xl.font-bold.text-gray-900 = group.name
+            p.text-gray-600.mt-1 = group.description
+            .flex.gap-2.mt-2
+              span.inline-block.bg-green-100.text-green-800.text-xs.px-2.py-1.rounded = t('groups.show.public')
+              span.inline-block.bg-blue-100.text-blue-800.text-xs.px-2.py-1.rounded
+                = t('groups.index.member_count', count: group.members.count)
+              p.text-sm.text-gray-500.ml-2
+                = t('groups.index.owner_label', owner: group.owner.email)
+
+          = button_to t('groups.show.join'), join_group_path(group), class: "bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition"
