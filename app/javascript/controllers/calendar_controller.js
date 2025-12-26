@@ -426,9 +426,18 @@ export default class extends Controller {
       body: formData
     }).then(response => {
       if (response.ok) {
-        // Clear the selection after successful removal
-        this.clearSelection()
+        return response.text()
+      } else {
+        console.error('Failed to remove availability')
+        throw new Error('Failed to remove availability')
       }
+    }).then(html => {
+      // Process the Turbo Stream response
+      Turbo.renderStreamMessage(html)
+      // Clear the selection after successful removal
+      this.clearSelection()
+    }).catch(error => {
+      console.error('Error removing availability:', error)
     })
   }
 

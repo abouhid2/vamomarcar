@@ -57,7 +57,7 @@ en:
       weekends_only: "Weekends Only"
       you_are_owner: "You are the owner"
       remove_member_confirm: "Remove %{name} from the group?"
-      remove_selected: "Remove Selected"
+      remove_selected: "Remove"
       remove_count: "Remove %{count} %{entries}?"
       entries:
         one: "entry"

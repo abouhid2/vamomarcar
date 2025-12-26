@@ -52,7 +52,7 @@
       / Sidebar (takes 1 column)
       .space-y-4
         / Add Availability Form
-        .sticky.top-24
+        div
           = form_with model: [ @group, Availability.new ], local: false, data: { turbo_frame: "_top", calendar_target: "form" } do |form|
             = form.hidden_field :start_date, data: { calendar_target: "startDateInput" }
             = form.hidden_field :end_date, data: { calendar_target: "endDateInput" }
@@ -81,34 +81,7 @@
 
         / Your Availability List
         .bg-white.rounded-lg.shadow-md.p-4
-          = turbo_frame_tag "availabilities" do
-            div data-controller="batch-select"
-              .flex.justify-between.items-center.mb-3
-                h3.text-lg.font-bold.text-gray-900 = t('groups.show.your_availability')
-                = form_with url: batch_destroy_group_availabilities_path(@group), method: :delete, data: { batch_select_target: "form", turbo_frame: "_top" }, class: "hidden", html: { data: { batch_select_target: "removeButton" } } do |f|
-                  = hidden_field_tag :current_month, @current_month.strftime("%Y-%m-%d")
-                  - @user_availability.each do |availability|
-                    = hidden_field_tag "availability_ids[]", availability.id, id: "batch_#{availability.id}", disabled: true
-                  button type="button" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition" data-action="click->batch-select#submitBatch"
-                    = t('groups.show.remove_selected')
-
-              - if @user_availability.any?
-                .space-y-1.5
-                  - @user_availability.order(:start_date).each do |availability|
-                    .flex.items-center.gap-2.bg-gray-50.p-2.rounded.text-sm
-                      input type="checkbox" class="rounded border-gray-300 text-teal-600 focus:ring-teal-500" data-batch-select-target="checkbox" data-action="change->batch-select#toggleSelection" value=availability.id id="availability_#{availability.id}" data-batch-field="batch_#{availability.id}"
-                      label for="availability_#{availability.id}" class="flex-1 cursor-pointer flex justify-between items-center"
-                        div
-                          - if availability.single_day?
-                            span.font-medium = availability.start_date.strftime("%b %d")
-                          - else
-                            span.font-medium
-                              = availability.start_date.strftime("%b %d")
-                              |  -
-                              = availability.end_date.strftime("%b %d")
-                        = link_to "×", group_availability_path(@group, availability, current_month: @current_month.strftime("%Y-%m-%d")), data: { turbo_method: :delete, turbo_confirm: t('common.remove') + "?" }, class: "text-red-600 hover:text-red-800 font-bold text-lg", onclick: "event.stopPropagation()"
-              - else
-                p.text-gray-500.italic.text-sm = t('groups.show.no_availability')
+          = render "groups/availabilities_list", group: @group, user_availability: @user_availability, current_month: @current_month
 
         / Group Members Section
         .bg-white.rounded-lg.shadow-md.p-4

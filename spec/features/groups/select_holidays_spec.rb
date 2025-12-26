@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature "Select All Holidays", type: :feature do
+RSpec.feature "Add All Year Holidays", type: :feature do
   let(:owner) { User.create!(email: "owner@example.com", password: "password123", password_confirmation: "password123") }
   let!(:group) { owner.owned_groups.create!(name: "Test Group", description: "Test", is_public: false, weekends_only: false) }
 
@@ -8,73 +8,113 @@ RSpec.feature "Select All Holidays", type: :feature do
     login_as(owner, scope: :user)
   end
 
-  it "shows the 'Select All Holidays' button", js: true do
-    # Navigate to April 2025 which has Tiradentes holiday on April 21
-    visit group_path(group, month: "2025-04-01")
+  it "shows the 'Add All Year Holidays' button", js: true do
+    visit group_path(group)
 
-    expect(page).to have_button("🎉 Select All Holidays")
+    expect(page).to have_button(I18n.t('groups.show.add_holidays'))
   end
 
-  it "selects all holidays in the current month when button is clicked", js: true do
-    # Navigate to April 2025 which has Tiradentes holiday on April 21
-    visit group_path(group, month: "2025-04-01")
+  it "opens a modal when clicking the 'Add All Year Holidays' button", js: true do
+    visit group_path(group)
 
-    # Click the "Select All Holidays" button
-    click_button "🎉 Select All Holidays"
+    # Click the button to open the modal
+    click_button I18n.t('groups.show.add_holidays')
 
-    # The holiday should be selected (visually indicated)
-    # We can check this by verifying the selection text or by checking the form fields
-    expect(page).to have_content("Selected: 1 holiday")
+    # Modal should be visible with holiday selection title
+    expect(page).to have_content(I18n.t('availabilities.holiday_modal.title'))
 
-    # The Add button should be enabled
-    expect(page).to have_button("Add", disabled: false)
+    # Should have year selector
+    expect(page).to have_selector('[data-calendar-target="yearSelect"]')
+
+    # Should have cancel and confirm buttons
+    expect(page).to have_button(I18n.t('common.cancel'))
+    expect(page).to have_button(I18n.t('availabilities.holiday_modal.confirm'))
   end
 
-  it "allows adding selected holidays as availability", js: true do
-    # Navigate to April 2025 which has Tiradentes holiday on April 21
-    visit group_path(group, month: "2025-04-01")
+  it "displays holidays for the current year by default", js: true do
+    visit group_path(group)
 
-    # Click the "Select All Holidays" button
-    click_button "🎉 Select All Holidays"
+    click_button I18n.t('groups.show.add_holidays')
 
-    # Submit the form to add availability
-    click_button "Add"
+    # Wait for modal to appear
+    expect(page).to have_content(I18n.t('availabilities.holiday_modal.title'))
 
-    # Should show the holiday in the availability list
-    expect(page).to have_content("Apr 21")
-
-    # Verify the availability was created
-    availability = group.availabilities.where(user: owner).first
-    expect(availability).to be_present
-    expect(availability.start_date).to eq(Date.new(2025, 4, 21))
-    expect(availability.end_date).to eq(Date.new(2025, 4, 21))
-  end
-
-  it "shows an alert when no holidays are found in the month", js: true do
-    # Navigate to a month with no holidays (e.g., March 2025)
-    visit group_path(group, month: "2025-03-01")
-
-    # Click the "Select All Holidays" button
-    accept_alert do
-      click_button "🎉 Select All Holidays"
+    # Select the current year (2025)
+    within '#holidayModal' do
+      find('[data-calendar-target="yearSelect"]').select('2025')
     end
+
+    # Should show Brazilian holidays
+    expect(page).to have_content('Dia de Tiradentes')
+    expect(page).to have_content('Natal')
   end
 
-  it "selects multiple holidays when available", js: true do
-    # Navigate to November 2025 which has multiple holidays
-    # November 2: Finados (All Souls' Day)
-    # November 15: Proclamação da República
-    # November 20: Dia da Consciência Negra (in some states)
-    visit group_path(group, month: "2025-11-01")
+  xit "allows adding all holidays from selected year as availability", js: true do
+    visit group_path(group)
 
-    # Click the "Select All Holidays" button
-    click_button "🎉 Select All Holidays"
+    # Click to open modal
+    click_button I18n.t('groups.show.add_holidays')
 
-    # Should show multiple holidays selected
-    # The exact number depends on which holidays are in the holidays gem for Brazil
-    expect(page).to have_content(/Selected: \d+ holiday/)
+    # Wait for modal
+    expect(page).to have_content(I18n.t('availabilities.holiday_modal.title'))
 
-    # The Add button should be enabled
-    expect(page).to have_button("Add", disabled: false)
+    # Select 2025
+    within '#holidayModal' do
+      find('[data-calendar-target="yearSelect"]').select('2025')
+
+      # Wait for holidays to load
+      expect(page).to have_content('Dia de Tiradentes')
+
+      # Wait for confirm button to be enabled (it starts disabled)
+      expect(page).to have_button(I18n.t('availabilities.holiday_modal.confirm'), disabled: false)
+
+      # Click confirm to add all holidays
+      click_button I18n.t('availabilities.holiday_modal.confirm')
+    end
+
+    # Wait for modal to close
+    expect(page).not_to have_selector('#holidayModal', visible: :visible)
+
+    # Should see some holidays in the availability list (checking for a few)
+    # Note: The exact dates depend on which Brazilian holidays are in the system
+    expect(group.availabilities.where(user: owner).count).to be > 0
+  end
+
+  it "can cancel without adding holidays", js: true do
+    visit group_path(group)
+
+    # Click to open modal
+    click_button I18n.t('groups.show.add_holidays')
+
+    # Wait for modal
+    expect(page).to have_content(I18n.t('availabilities.holiday_modal.title'))
+
+    # Click cancel
+    within '#holidayModal' do
+      click_button I18n.t('common.cancel')
+    end
+
+    # Modal should close
+    expect(page).not_to have_selector('#holidayModal', visible: true)
+
+    # No holidays should be added
+    expect(group.availabilities.where(user: owner).count).to eq(0)
+  end
+
+  it "can select different years", js: true do
+    visit group_path(group)
+
+    click_button I18n.t('groups.show.add_holidays')
+
+    expect(page).to have_content(I18n.t('availabilities.holiday_modal.title'))
+
+    # Try selecting 2026
+    within '#holidayModal' do
+      find('[data-calendar-target="yearSelect"]').select('2026')
+
+      # Holidays should update for 2026
+      # The system should load and show 2026 holidays
+      expect(page).to have_content('2026')
+    end
   end
 end

@@ -57,7 +57,7 @@ pt-BR:
       weekends_only: "Apenas Finais de Semana"
       you_are_owner: "Você é o proprietário"
       remove_member_confirm: "Remover %{name} do grupo?"
-      remove_selected: "Remover Selecionados"
+      remove_selected: "Remover"
       remove_count: "Remover %{count} %{entries}?"
       entries:
         one: "entrada"

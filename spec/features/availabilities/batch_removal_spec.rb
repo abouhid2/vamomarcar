@@ -22,11 +22,11 @@ RSpec.describe "Batch Availability Removal", type: :feature, js: true do
     expect(page).to have_content("Jan 20")
 
     # Select two availabilities (using checkboxes or data attributes)
-    check "availability_#{availability1.id}"
-    check "availability_#{availability3.id}"
+    check "availability_checkbox_#{availability1.id}"
+    check "availability_checkbox_#{availability3.id}"
 
-    # Click remove selected button
-    click_button "Remove Selected"
+    # Click Remove button
+    click_button "Remove"
 
     # Should confirm deletion
     page.driver.browser.switch_to.alert.accept
@@ -41,18 +41,58 @@ RSpec.describe "Batch Availability Removal", type: :feature, js: true do
     expect(group.availabilities.where(user: user).first.id).to eq(availability2.id)
   end
 
-  it "shows remove selected button only when items are selected" do
-    group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 10), end_date: Date.new(2025, 1, 10))
+  it "shows Remove button only when items are selected" do
+    availability = group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 10), end_date: Date.new(2025, 1, 10))
 
     visit group_path(group)
 
     # Button should be hidden initially
-    expect(page).to have_button("Remove Selected", visible: false)
+    expect(page).to have_button("Remove", visible: false)
 
     # Select an availability
-    check "availability_"
+    check "availability_checkbox_#{availability.id}"
 
     # Button should be visible
-    expect(page).to have_button("Remove Selected", visible: true)
+    expect(page).to have_button("Remove", visible: true)
+  end
+
+  it "has correct Stimulus targets on batch removal form" do
+    availability = group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 10), end_date: Date.new(2025, 1, 10))
+
+    visit group_path(group)
+
+    # The form should have both 'form' and 'removeButton' as Stimulus targets
+    form = find("form[action='#{batch_destroy_group_availabilities_path(group)}']", visible: false)
+    targets = form["data-batch-select-target"]
+
+    # Should have both targets space-separated
+    expect(targets).to include("form")
+    expect(targets).to include("removeButton")
+  end
+
+  it "submits batch deletion via DELETE method" do
+    availability1 = group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 10), end_date: Date.new(2025, 1, 10))
+    availability2 = group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 15), end_date: Date.new(2025, 1, 15))
+
+    visit group_path(group)
+
+    # Verify form method is DELETE
+    form = find("form[action='#{batch_destroy_group_availabilities_path(group)}']", visible: false)
+    method_input = form.find("input[name='_method']", visible: false)
+    expect(method_input.value).to eq("delete")
+
+    # Perform deletion to ensure it works
+    check "availability_checkbox_#{availability1.id}"
+    check "availability_checkbox_#{availability2.id}"
+
+    click_button "Remove"
+    page.driver.browser.switch_to.alert.accept
+
+    # Wait for Turbo Stream to update the page
+    expect(page).not_to have_selector("#availability_#{availability1.id}")
+    expect(page).not_to have_selector("#availability_#{availability2.id}")
+
+    # Both should be deleted
+    expect(group.availabilities.where(user: user).count).to eq(0)
   end
 end
