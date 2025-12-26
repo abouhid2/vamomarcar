@@ -81,30 +81,35 @@
           = render "groups/availabilities_list", group: @group, user_availability: @user_availability, current_month: @current_month
 
         / Group Members Section
-        .bg-white.rounded-lg.shadow-md.p-4
-          h3.text-lg.font-bold.text-gray-900.mb-3
-            = t('groups.show.members_count', count: @members.count)
+        .bg-white.rounded-lg.shadow-md.p-4[data-controller="collapsible"]
+          .flex.justify-between.items-center.mb-3
+            button.flex.items-center.gap-2.hover:text-teal-600.transition[type="button" data-action="click->collapsible#toggle"]
+              h3.text-lg.font-bold.text-gray-900
+                = t('groups.show.members_count', count: @members.count)
+              svg.w-5.h-5.text-gray-500.transition-transform[data-collapsible-target="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+                path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"]
 
-          .space-y-1.5
-            - @members.each do |member|
-              .bg-gray-50.p-2.rounded.text-sm
-                .flex.items-center.justify-between
-                  .flex.items-center.gap-2.min-w-0.flex-1
-                    span.font-medium.text-gray-900.truncate = member.email.split('@').first
-                    - if member == @group.owner
-                      span.inline-block.bg-purple-100.text-purple-800.text-xs.px-1.5.py-0.5.rounded = t('groups.index.owner')
+          div[data-collapsible-target="content"]
+            .space-y-1.5.max-h-64.overflow-y-auto.pr-1
+              - @members.each do |member|
+                .bg-gray-50.p-2.rounded.text-sm
+                  .flex.items-center.justify-between
+                    .flex.items-center.gap-2.min-w-0.flex-1
+                      span.font-medium.text-gray-900.truncate = member.email.split('@').first
+                      - if member == @group.owner
+                        span.inline-block.bg-purple-100.text-purple-800.text-xs.px-1.5.py-0.5.rounded = t('groups.index.owner')
 
-                  .flex.items-center.gap-2
-                    / Show member's availability count
-                    == member_availability_badge(@group, member)
+                    .flex.items-center.gap-2
+                      / Show member's availability count
+                      == member_availability_badge(@group, member)
 
-                    / Show remove button only to owner and not for the owner themselves
-                    - if @group.owner == current_user && member != @group.owner
-                      = button_to "×", remove_member_group_path(@group, user_id: member.id), method: :delete, data: { turbo_confirm: t('groups.show.remove_member_confirm', name: member.email.split('@').first) }, class: "text-red-600 hover:text-red-800 font-bold text-lg leading-none"
+                      / Show remove button only to owner and not for the owner themselves
+                      - if @group.owner == current_user && member != @group.owner
+                        = button_to "×", remove_member_group_path(@group, user_id: member.id), method: :delete, data: { turbo_confirm: t('groups.show.remove_member_confirm', name: member.email.split('@').first) }, class: "text-red-600 hover:text-red-800 font-bold text-lg leading-none"
 
-          - if @group.is_public && !@members.include?(current_user)
-            .mt-3.pt-3.border-t.border-gray-200
-              = button_to t('groups.show.join'), join_group_path(@group), class: "w-full bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-semibold transition text-sm"
+            - if @group.is_public && !@members.include?(current_user)
+              .mt-3.pt-3.border-t.border-gray-200
+                = button_to t('groups.show.join'), join_group_path(@group), class: "w-full bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-semibold transition text-sm"
 
     / Bulk Add Availability Modal
     = render "groups/bulk_add_modal"

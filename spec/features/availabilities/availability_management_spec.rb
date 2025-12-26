@@ -25,7 +25,7 @@ RSpec.describe "Availability Management", type: :feature, js: true do
 
       check "availability_checkbox_#{avail1.id}"
       check "availability_checkbox_#{avail2.id}"
-      click_button I18n.t('common.remove')
+      click_button I18n.t('groups.show.remove_selected')
       page.driver.browser.switch_to.alert.accept
 
       expect(page).not_to have_selector("#availability_#{avail1.id}")
@@ -37,7 +37,7 @@ RSpec.describe "Availability Management", type: :feature, js: true do
       group.availabilities.create!(user: user, start_date: Date.new(2025, 1, 10), end_date: Date.new(2025, 1, 10))
       visit group_path(group)
 
-      expect(page).to have_button(I18n.t('common.remove'), visible: false)
+      expect(page).to have_button(I18n.t('groups.show.remove_selected'), visible: false)
     end
   end
 
@@ -50,7 +50,7 @@ RSpec.describe "Availability Management", type: :feature, js: true do
 
       visit group_path(group)
 
-      within("[data-controller='batch-select']") do
+      within("#availabilities") do
         expect(page).not_to have_content("Jan 10")
       end
     end

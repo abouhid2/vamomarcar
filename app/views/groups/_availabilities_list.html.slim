@@ -1,32 +1,32 @@
-#availabilities data-controller="batch-select"
-  .flex.justify-between.items-center.mb-3
-    h3.text-lg.font-bold.text-gray-900 = t('groups.show.your_availability')
-    .flex.gap-2
-      = form_with url: batch_destroy_group_availabilities_path(group), method: :delete, data: { batch_select_target: "form removeButton", turbo_frame: "_top" }, class: "hidden" do |f|
-      = hidden_field_tag :current_month, current_month.strftime("%Y-%m-%d")
-      - user_availability.each do |availability|
-        = hidden_field_tag "availability_ids[]", availability.id, id: "batch_#{availability.id}", disabled: true
-      button type="button" class="btn-brasil-danger px-3 py-1.5 text-sm" data-action="click->batch-select#submitBatch"
-        = t('groups.show.remove_selected')
+#availabilities[data-controller="batch-select collapsible" data-batch-select-confirm-message-value=t('groups.show.remove_count', count: '%{count}', entries: '%{entries}') data-batch-select-entries-value=({ one: t('groups.show.entries.one'), other: t('groups.show.entries.other') }.to_json)]
+  .mb-3
+    button.flex.items-center.gap-2.hover:text-teal-600.transition.mb-2[type="button" data-action="click->collapsible#toggle"]
+      h3.text-lg.font-bold.text-gray-900 = t('groups.show.your_availability')
+      svg.w-5.h-5.text-gray-500.transition-transform[data-collapsible-target="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"]
+        path[stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"]
+    .flex.gap-2.flex-wrap.items-center
+      = form_with url: batch_destroy_group_availabilities_path(group), method: :delete, data: { batch_select_target: "form", turbo_frame: "_top" } do |f|
+        = hidden_field_tag :current_month, current_month.strftime("%Y-%m-%d")
+        - user_availability.each do |availability|
+          = hidden_field_tag "availability_ids[]", availability.id, id: "batch_#{availability.id}", disabled: true
+        button.bg-red-600.hover:bg-red-700.text-white.px-4.py-2.text-sm.rounded-lg.font-semibold.transition.shadow-sm.hover:shadow.hidden[type="button" data-action="click->batch-select#submitBatch" data-batch-select-target="removeButton"]
+          = t('groups.show.remove_selected')
       - if user_availability.any?
-        = button_to t('groups.show.remove_all'), remove_all_group_availabilities_path(group, current_month: current_month.strftime("%Y-%m-%d")), method: :delete, data: { turbo_confirm: t('groups.show.remove_all_confirm') }, class: "bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1.5 text-sm rounded-lg font-medium transition"
+        = button_to t('groups.show.remove_all'), remove_all_group_availabilities_path(group, current_month: current_month.strftime("%Y-%m-%d")), method: :delete, data: { turbo_confirm: t('groups.show.remove_all_confirm') }, class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm rounded-lg font-semibold transition shadow-sm hover:shadow"
 
-  - if user_availability.any?
-    .space-y-1.5
-      - user_availability.order(:start_date).each do |availability|
-        .flex.items-center.gap-2.bg-gray-50.p-2.rounded.text-sm id="availability_#{availability.id}"
-          input type="checkbox" id="availability_checkbox_#{availability.id}" class="rounded border-gray-300 text-teal-600 focus:ring-teal-500" data-batch-select-target="checkbox" data-action="change->batch-select#toggleSelection" value=availability.id data-batch-field="batch_#{availability.id}"
-          label for="availability_checkbox_#{availability.id}" class="flex-1 cursor-pointer flex justify-between items-center"
-            div
-              - if availability.single_day?
-                span.font-medium = availability.start_date.strftime("%b %d")
-              - else
-                span.font-medium
-                  = availability.start_date.strftime("%b %d")
-                  |  -
-                  = availability.end_date.strftime("%b %d")
-            = form_with url: group_availability_path(group, availability, current_month: current_month.strftime("%Y-%m-%d")), method: :delete, class: "inline", data: { turbo_confirm: t('common.remove') + '?' } do |f|
-              button type="submit" class="text-red-600 hover:text-red-800 font-bold text-lg border-0 bg-transparent p-0 cursor-pointer" onclick="event.stopPropagation()"
-                | ×
-  - else
-    p.text-gray-500.italic.text-sm = t('groups.show.no_availability')
+  div[data-collapsible-target="content"]
+    - if user_availability.any?
+      .space-y-1.5.max-h-64.overflow-y-auto.pr-1
+        - user_availability.order(:start_date).each do |availability|
+          .flex.items-center.gap-2.bg-gray-50.p-2.rounded.text-sm id="availability_#{availability.id}"
+            input type="checkbox" id="availability_checkbox_#{availability.id}" class="rounded border-gray-300 text-teal-600 focus:ring-teal-500" data-batch-select-target="checkbox" data-action="change->batch-select#toggleSelection" value=availability.id data-batch-field="batch_#{availability.id}"
+            label for="availability_checkbox_#{availability.id}" class="flex-1 cursor-pointer flex justify-between items-center"
+              .flex.items-center.gap-1
+                - if availability_includes_holiday?(availability)
+                  span.text-xs 🎉
+                span.font-medium = format_availability_date_range(availability)
+              = form_with url: group_availability_path(group, availability, current_month: current_month.strftime("%Y-%m-%d")), method: :delete, class: "inline", data: { turbo_confirm: t('common.remove') + '?' } do |f|
+                button type="submit" class="text-red-600 hover:text-red-800 font-bold text-lg border-0 bg-transparent p-0 cursor-pointer" onclick="event.stopPropagation()"
+                  | ×
+    - else
+      p.text-gray-500.italic.text-sm = t('groups.show.no_availability')

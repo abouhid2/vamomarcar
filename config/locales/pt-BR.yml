@@ -118,7 +118,7 @@ pt-BR:
       next_6_months: "Próximos 6 meses"
       next_9_months: "Próximos 9 meses"
       next_12_months: "Próximos 12 meses"
-      weekends_only: "Finais de semana (Sex, Sáb, Dom)"
+      weekends_only: "Somente Finais de semana (Sex, Sáb, Dom)"
       confirm: "Adicionar Selecionados"
       cancel: "Cancelar"
     add_months:
@@ -160,6 +160,9 @@ pt-BR:
 
   # Days of week (full names)
   date:
+    formats:
+      short: "%d/%m"
+      with_year: "%d/%m/%y"
     day_names:
       - Domingo
       - Segunda-feira
@@ -267,6 +270,11 @@ pt-BR:
 
   # Calendar JavaScript
   calendar:
+    legend:
+      you: "Você"
+      others: "Outros"
+      selecting: "Selecionando"
+      holiday: "Feriado"
     selection:
       selected_single: "Selecionado: %{date}"
       selected_range: "Selecionado: %{start} - %{end} (%{count} dias)"

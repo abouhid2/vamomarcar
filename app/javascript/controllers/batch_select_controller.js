@@ -2,6 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["checkbox", "removeButton", "form"]
+  static values = {
+    confirmMessage: String,
+    entries: Object
+  }
 
   connect() {
     this.updateRemoveButton()
@@ -31,7 +35,13 @@ export default class extends Controller {
       return
     }
 
-    if (!confirm(`Remove ${checkedCount} availability ${checkedCount === 1 ? 'entry' : 'entries'}?`)) {
+    // Get the appropriate entries translation (singular/plural)
+    const entriesText = checkedCount === 1 ? this.entriesValue.one : this.entriesValue.other
+    const message = this.confirmMessageValue
+      .replace('%{count}', checkedCount)
+      .replace('%{entries}', entriesText)
+
+    if (!confirm(message)) {
       return
     }
 

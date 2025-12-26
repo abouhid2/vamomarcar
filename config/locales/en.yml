@@ -155,6 +155,9 @@ en:
 
   # Days of week (full names)
   date:
+    formats:
+      short: "%m/%d"
+      with_year: "%m/%d/%y"
     day_names:
       - Sunday
       - Monday
@@ -262,6 +265,11 @@ en:
 
   # Calendar JavaScript
   calendar:
+    legend:
+      you: "You"
+      others: "Others"
+      selecting: "Selecting"
+      holiday: "Holiday"
     selection:
       selected_single: "Selected: %{date}"
       selected_range: "Selected: %{start} - %{end} (%{count} days)"

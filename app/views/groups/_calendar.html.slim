@@ -16,22 +16,22 @@
     .flex.flex-wrap.gap-4.text-sm
       .flex.items-center.gap-2
         .w-4.h-2.bg-teal-500.rounded
-        span.text-gray-700 You
+        span.text-gray-700 = t('calendar.legend.you')
       .flex.items-center.gap-2
         .w-4.h-2.bg-slate-400.rounded
-        span.text-gray-700 Others
+        span.text-gray-700 = t('calendar.legend.others')
       .flex.items-center.gap-2
         .w-4.h-2.border-2.border-teal-300.bg-teal-50.rounded
-        span.text-gray-700 Selecting
+        span.text-gray-700 = t('calendar.legend.selecting')
       .flex.items-center.gap-2
         span.text-xs 🎉
         .w-4.h-4.bg-purple-50.rounded.border.border-purple-200
-        span.text-gray-700 Holiday
+        span.text-gray-700 = t('calendar.legend.holiday')
 
   / Calendar Grid
   .grid.grid-cols-7.gap-1
     / Day Headers
-    - [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ].each do |day_name|
+    - I18n.t('date.abbr_day_names').each do |day_name|
       .text-center.font-semibold.text-gray-600.py-2.text-sm = day_name
 
     / Day Cells
